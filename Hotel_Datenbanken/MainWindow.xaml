@@ -7,7 +7,24 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TextBox Name="test" HorizontalAlignment="Left" Margin="210,106,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-
+        <TabControl Name="tabcontrol" Margin="0,-24,0,0" Grid.ColumnSpan="3">
+            <TabItem Header="hallo">
+                <Grid Background="#FFE5E5E5" Height="437" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="14*"/>
+                        <ColumnDefinition Width="773*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Name="combobox" Grid.Column="1" HorizontalAlignment="Left" Margin="3,21,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="combobox_SelectionChanged_2" Grid.ColumnSpan="2"/>
+                    <DataGrid Name="tabelle" Grid.Column="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,60,0,0" Grid.ColumnSpan="2"/>
+                    <Button Grid.Column="2" Content="Button" HorizontalAlignment="Left" Margin="226,29,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="test">
+                <Grid Background="#FFE5E5E5">
+                    <Button Content="Button" HorizontalAlignment="Left" Margin="141,24,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
