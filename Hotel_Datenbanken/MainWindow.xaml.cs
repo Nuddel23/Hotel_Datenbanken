@@ -19,10 +19,16 @@ namespace Hotel_Datenbanken
     /// </summary>
     public partial class MainWindow : Window
     {
+        public TabControl TabControl { get; set; }
+
         MySqlConnection DB;
         public MainWindow()
         {
             InitializeComponent();
+
+     
+
+            TabControl = tabcontrol;
             DB = new MySqlConnection("Server=localhost; User ID = root; Password = ; Database = test");
             DB.Open();
             Connection();
@@ -40,16 +46,6 @@ namespace Hotel_Datenbanken
                     //test.Text = reader.GetString(i);
                 }
             }
-        }
-
-        private void combobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
-        }
-
-        private void combobox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-            
         }
 
         private void combobox_SelectionChanged_2(object sender, SelectionChangedEventArgs e)
@@ -74,41 +70,6 @@ namespace Hotel_Datenbanken
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             tabcontrol.SelectedIndex = 0;
-        }
-
-
-        private void TabSwitcher(int TabIndex)
-        {
-            Grid[] Tabs = new Grid[2];
-            Tabs[0] = Tab1;
-            Tabs[1] = Tab2;
-
-            for (int i = 0; i < Tabs.Length; i++)
-            {
-                if (i == TabIndex)
-                {
-                    Tabs[i].Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    Tabs[i].Visibility= Visibility.Collapsed;
-                }
-            }
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            TabSwitcher(0);
-        }
-
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
-            TabSwitcher(1);
-        }
-
-        private void Button_Click_4(object sender, RoutedEventArgs e)
-        {
-            TabSwitcher(1);
         }
     }
 }

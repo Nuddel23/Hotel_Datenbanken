@@ -7,14 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Grid x:Name="Tab1" Visibility="Collapsed">
-            <Button Content="hi" Height="20" Width="60" Margin="261,207,479,207" Click="Button_Click_4"></Button>
-            <Button Content="bye" Height="30" Width="80" Click="Button_Click_3"></Button>
-        </Grid>
-        <Grid x:Name="Tab2" Visibility="Collapsed">
-            <Button Content="tschus" Height="40" Width="90" Margin="264,126,446,268" Click="Button_Click_2"></Button>
-        </Grid>
         <TabControl Name="tabcontrol" Margin="0,0,0,0" Grid.ColumnSpan="3" Visibility="Visible">
+            <TabItem Name="Homepage" Visibility="Collapsed">
+                <local:Homepage/>
+            </TabItem>
+            <TabItem Name="Zimmer_Buchen" Visibility="Collapsed">
+                <local:Zimmer_Buchen/>
+            </TabItem>
+            <TabItem Name="Gäste" Visibility="Collapsed">
+                <local:Gäste/>
+            </TabItem>
             <TabItem Header="hallo" Visibility="Collapsed">
                 <Grid Background="#FFE5E5E5" Height="437" VerticalAlignment="Center">
                     <ComboBox Name="combobox" Grid.Column="1" HorizontalAlignment="Left" Margin="3,21,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="combobox_SelectionChanged_2" Grid.ColumnSpan="2"/>
@@ -22,10 +24,8 @@
                     <Button Grid.Column="2" Content="Button" HorizontalAlignment="Left" Margin="226,29,0,0" VerticalAlignment="Top" Click="Button_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="test" Visibility="Collapsed">
-                <Grid Background="#FFE5E5E5">
-                    <Button Content="Button" HorizontalAlignment="Left" Margin="141,24,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
-                </Grid>
+            <TabItem  Header="test" Visibility="Collapsed">
+                <Button Content="Button" HorizontalAlignment="Left" Margin="141,24,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
             </TabItem>
         </TabControl>
     </Grid>
