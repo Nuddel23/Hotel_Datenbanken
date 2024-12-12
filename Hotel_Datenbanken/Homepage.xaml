@@ -1,14 +1,14 @@
-﻿<UserControl x:Class="Hotel_Datenbanken.Homepage"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Hotel_Datenbanken"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<Page x:Class="Hotel_Datenbanken.Homepage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Hotel_Datenbanken"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Homepage">
+
     <Grid>
-        <Button x:Name="Zimmer_Buchen" Content="Zimmer Buchen" Width="80" Height="20" Margin="-190,0,0,0" Click="Zimmer_Buchen_Click"></Button>
-        <Button x:Name="Gäste" Content="Gäste Verwalten" Width="80" Height="20" Margin="0,0,0,0" Click="Gäste_Click" ></Button>
-        <Button x:Name="Buchungen_einsehen" Content="Buchungen Einsehen" Width="80" Height="20" Margin="190,0,0,0" Click="Buchungen_einsehen_Click" ></Button>
+        <TextBox Text="Homepage"/>
     </Grid>
-</UserControl>
+</Page>

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MySqlConnector;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,11 +20,40 @@ namespace Hotel_Datenbanken
     /// <summary>
     /// Interaktionslogik für Gäste.xaml
     /// </summary>
-    public partial class Gäste : UserControl
+    public partial class Gäste : Page
     {
-        public Gäste()
+        MySqlConnection DB;
+        Frame frame;
+        public Gäste(MySqlConnection DB, Frame frame)
         {
             InitializeComponent();
+            this.DB = DB;
+            this.frame = frame;
+            zeige_Gäste();
+        }
+
+        void zeige_Gäste()
+        {
+            DataTable GastTablle = new DataTable();
+
+            using (var command = new MySqlCommand($"SELECT * FROM gast;", DB))
+            {
+                using (var adapter = new MySqlDataAdapter(command))
+                {
+                    adapter.Fill(GastTablle);
+                }
+            }
+            tabelle.ItemsSource = GastTablle.DefaultView;
+        }
+
+        private void Gast_hinzufügen_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void Gast_bearbeiten_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

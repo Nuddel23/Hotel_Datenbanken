@@ -7,26 +7,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TabControl Name="tabcontrol" Margin="0,0,0,0" Grid.ColumnSpan="3" Visibility="Visible">
-            <TabItem Name="Homepage" Visibility="Collapsed">
-                <local:Homepage/>
-            </TabItem>
-            <TabItem Name="Zimmer_Buchen" Visibility="Collapsed">
-                <local:Zimmer_Buchen/>
-            </TabItem>
-            <TabItem Name="Gäste" Visibility="Collapsed">
-                <local:Gäste/>
-            </TabItem>
-            <TabItem Header="hallo" Visibility="Collapsed">
-                <Grid Background="#FFE5E5E5" Height="437" VerticalAlignment="Center">
-                    <ComboBox Name="combobox" Grid.Column="1" HorizontalAlignment="Left" Margin="3,21,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="combobox_SelectionChanged_2" Grid.ColumnSpan="2"/>
-                    <DataGrid Name="tabelle" Grid.Column="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,60,0,0" Grid.ColumnSpan="2"/>
-                    <Button Grid.Column="2" Content="Button" HorizontalAlignment="Left" Margin="226,29,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem  Header="test" Visibility="Collapsed">
-                <Button Content="Button" HorizontalAlignment="Left" Margin="141,24,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
-            </TabItem>
-        </TabControl>
+        <StackPanel Orientation="Horizontal" Height="35" VerticalAlignment="Top">
+            <Button x:Name="Homepage" Content="Homepage" Width="100" Click="Homepage_Click"/>
+            <Button x:Name="Zimmer_Buchen" Content="Zimmer Buchen" Width="100" Click="Zimmer_Buchen_Click"/>
+            <Button x:Name="Gäste" Content="Gäste" Width="100" Click="Gäste_Click"/>
+
+        </StackPanel>
+        <Frame x:Name="Main" NavigationUIVisibility="Hidden" Height="388" VerticalAlignment="Top" Margin="0,46,0,0"/>
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySqlConnector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,31 +19,20 @@ namespace Hotel_Datenbanken
     /// <summary>
     /// Interaktionslogik für Homepage.xaml
     /// </summary>
-    public partial class Homepage : UserControl
+    public partial class Homepage : Page
     {
-
-        
-
-        public Homepage()
+        MySqlConnection DB;
+        Frame frame;
+        public Homepage(MySqlConnection DB, Frame frame)
         {
             InitializeComponent();
-            
-            
+            this.DB = DB;
+            this.frame = frame;
         }
 
-        private void Zimmer_Buchen_Click(object sender, RoutedEventArgs e)
+        public void test()
         {
-           
-        }
-
-        private void Gäste_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Buchungen_einsehen_Click(object sender, RoutedEventArgs e)
-        {
-
+            MessageBox.Show("hallo");
         }
     }
 }
