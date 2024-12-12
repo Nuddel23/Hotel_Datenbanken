@@ -10,10 +10,11 @@
 
     <Grid>
         <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top">
-            <TextBox Text="Gäste" Width="100" />
+            <Button x:Name="Gast" Content="Gast" Width="100" Click="Gast_Main" />
             <Button x:Name="Gast_hinzufügen" Content="Gast_hinzufügen" Width="100" Click="Gast_hinzufügen_Click" />
             <Button x:Name="Gast_bearbeiten" Content="Gast_bearbeiten" Width="100" Click="Gast_bearbeiten_Click" />
         </StackPanel>
-        <DataGrid Name="tabelle" Margin="0,20,0,0"/>
+        <Frame x:Name="Gast_Frame" NavigationUIVisibility="Hidden" VerticalAlignment="Top" Margin="0,20,0,0"/>
+        <DataGrid Name="tabelle" Margin="0,20,0,0" Visibility="Hidden"/>
     </Grid>
 </Page>

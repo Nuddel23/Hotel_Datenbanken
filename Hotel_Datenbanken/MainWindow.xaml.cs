@@ -31,7 +31,7 @@ namespace Hotel_Datenbanken
 
             DB = new MySqlConnection("Server=localhost; User ID = root; Password = ; Database = test");
             DB.Open();
-            //Connection();
+            
         }
 
         private void Homepage_Click(object sender, RoutedEventArgs e)

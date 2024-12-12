@@ -1,4 +1,4 @@
-﻿<Page x:Class="Hotel_Datenbanken.Zimmer_Buchen"
+﻿<Page x:Class="Hotel_Datenbanken.Gast_hinzufügen"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,13 +6,12 @@
       xmlns:local="clr-namespace:Hotel_Datenbanken"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Zimmer_Buchen">
+      Title="Gast_hinzufügen">
 
     <Grid>
-        <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top">
-            <TextBox Text="Zimmer Buchen" Width="100" />
-            <ComboBox Name="combobox" SelectionChanged="combobox_SelectionChanged" Width="100"/>
+        <StackPanel Margin="30,30,600,30" >
+            <TextBox Text="Zimmer Buchen" Width="100" Margin="10,10,10,10"/>
+            <ComboBox Name="combobox"  Width="100"/>
         </StackPanel>
-        <DataGrid Name="tabelle" Margin="0,20,0,0"/>
     </Grid>
 </Page>

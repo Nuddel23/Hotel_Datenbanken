@@ -24,6 +24,7 @@ namespace Hotel_Datenbanken
     {
         MySqlConnection DB;
         Frame frame;
+
         public Gäste(MySqlConnection DB, Frame frame)
         {
             InitializeComponent();
@@ -48,12 +49,22 @@ namespace Hotel_Datenbanken
 
         private void Gast_hinzufügen_Click(object sender, RoutedEventArgs e)
         {
-            
+            Gast_Frame.Content = new Gast_hinzufügen();
+            Gast_Frame.Visibility = Visibility.Visible;
+            tabelle.Visibility = Visibility.Hidden;
         }
 
         private void Gast_bearbeiten_Click(object sender, RoutedEventArgs e)
         {
+            Gast_Frame.Content = new Gast_bearbeiten();
+            Gast_Frame.Visibility = Visibility.Visible;
+            tabelle.Visibility = Visibility.Hidden;
+        }
 
+        private void Gast_Main(object sender, RoutedEventArgs e)
+        {
+            Gast_Frame.Visibility = Visibility.Hidden;
+            tabelle.Visibility = Visibility.Visible;
         }
     }
 }
