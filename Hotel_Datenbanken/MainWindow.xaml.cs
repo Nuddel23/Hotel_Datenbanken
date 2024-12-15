@@ -29,16 +29,16 @@ namespace Hotel_Datenbanken
         {
             InitializeComponent();
 
-            DB = new MySqlConnection("Server=localhost; User ID = root; Password = ; Database = test");
+            DB = new MySqlConnection("Server=localhost; User ID = root; Password = root; Database = hotel");
             DB.Open();
-            
+            homepage = new Homepage(DB, Main);
+            Main.Content = homepage;
         }
 
         private void Homepage_Click(object sender, RoutedEventArgs e)
         {
             homepage = new Homepage(DB, Main);
             Main.Content = homepage;
-            homepage.test();
         }
 
         private void Zimmer_Buchen_Click(object sender, RoutedEventArgs e)

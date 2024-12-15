@@ -29,10 +29,5 @@ namespace Hotel_Datenbanken
             this.DB = DB;
             this.frame = frame;
         }
-
-        public void test()
-        {
-            MessageBox.Show("hallo");
-        }
     }
 }

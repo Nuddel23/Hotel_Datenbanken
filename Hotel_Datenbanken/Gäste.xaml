@@ -14,7 +14,21 @@
             <Button x:Name="Gast_hinzufügen" Content="Gast_hinzufügen" Width="100" Click="Gast_hinzufügen_Click" />
             <Button x:Name="Gast_bearbeiten" Content="Gast_bearbeiten" Width="100" Click="Gast_bearbeiten_Click" />
         </StackPanel>
-        <Frame x:Name="Gast_Frame" NavigationUIVisibility="Hidden" VerticalAlignment="Top" Margin="0,20,0,0"/>
-        <DataGrid Name="tabelle" Margin="0,20,0,0" Visibility="Hidden"/>
+        <Frame x:Name="Gast_Frame" NavigationUIVisibility="Hidden" VerticalAlignment="Top" Margin="0,20,0,0" Visibility="Hidden"/>
+        <Grid x:Name="Gast_Seite" Visibility="Visible">
+            <Label Content="Filter:" Margin="0,15"/>
+            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,35,0,0">
+                <TextBox x:Name="Vorname" Text="Vorname"                MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
+                <TextBox x:Name="Nachname" Text="Nachname"              MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
+                <TextBox x:Name="Email" Text="Email"                    MinWidth="100" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
+                <TextBox x:Name="Telefonnummer" Text="Telefonnummer"    MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
+                <TextBox x:Name="Straße" Text="Straße"                  MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
+                <TextBox x:Name="Hausnummer" Text="Hausnummer"          MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
+                <TextBox x:Name="PLZ" Text="PLZ"                        MinWidth="40" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
+                <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
+            </StackPanel>
+            <Label Content="Sotieren:" Margin="0,55"/>
+            <DataGrid Name="tabelle" Margin="0,80,0,0" IsTextSearchEnabled="True"/>
+        </Grid>
     </Grid>
 </Page>

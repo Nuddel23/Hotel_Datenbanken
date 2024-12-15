@@ -9,9 +9,24 @@
       Title="Gast_hinzufügen">
 
     <Grid>
-        <StackPanel Margin="30,30,600,30" >
-            <TextBox Text="Zimmer Buchen" Width="100" Margin="10,10,10,10"/>
-            <ComboBox Name="combobox"  Width="100"/>
+        <StackPanel Orientation="Vertical" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100,60"  >
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type TextBox}">
+                    <Setter Property="Margin" Value="0,10,0,0"/>
+                </Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="0,10,0,10"/>
+                </Style>
+            </StackPanel.Resources>
+            <TextBox x:Name="Vorname" Text="Vorname"/>
+            <TextBox x:Name="Nachname" Text="Nachname"/>
+            <TextBox x:Name="Email" Text="Email"/>
+            <TextBox x:Name="Telefonnummer" Text="Telefonnummer"/>
+            <TextBox x:Name="Straße" Text="Straße"/>
+            <TextBox x:Name="Hausnummer" Text="Hausnummer"/>
+            <TextBox x:Name="PLZ" Text="PLZ"/>
+            <TextBox x:Name="Ort" Text="Ort"/>
+            <Button x:Name="Bestätigen" Content="Bestätigen" Click="Bestätigen_Click"/>
         </StackPanel>
     </Grid>
 </Page>

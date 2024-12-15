@@ -25,5 +25,9 @@ namespace Hotel_Datenbanken
             InitializeComponent();
         }
 
+        private void Bestätigen_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
