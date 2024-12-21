@@ -24,15 +24,25 @@ namespace Hotel_Datenbanken
         Homepage homepage;
         Gäste gäste;
         Zimmer_Buchen zimmer_buchen;
+        ErrorPage errorpage;
 
         public MainWindow()
         {
             InitializeComponent();
 
             DB = new MySqlConnection("Server=localhost; User ID = root; Password = root; Database = hotel");
-            DB.Open();
-            homepage = new Homepage(DB, Main);
-            Main.Content = homepage;
+
+            try
+            {
+                DB.Open();
+                homepage = new Homepage(DB, Main);
+                Main.Content = homepage;
+            }
+            catch (Exception ex)
+            {
+                errorpage = new ErrorPage("Datenbank konnte nicht verbunden werden");
+                Main.Content = errorpage;
+            }
         }
 
         private void Homepage_Click(object sender, RoutedEventArgs e)
