@@ -27,6 +27,7 @@ namespace Hotel_Datenbanken
         Frame frame;
         DataTable GastTablle = new DataTable();
         DataView DataView;
+        Gast_hinzufügen gast_hinzufügen;
 
 
         public Gäste(MySqlConnection DB, Frame frame)
@@ -55,9 +56,10 @@ namespace Hotel_Datenbanken
 
         private void Gast_hinzufügen_Click(object sender, RoutedEventArgs e)
         {
-            Gast_Frame.Content = new Gast_hinzufügen();
+            gast_hinzufügen = new Gast_hinzufügen();
+            /*Gast_Frame.Content = new Gast_hinzufügen();
             Gast_Frame.Visibility = Visibility.Visible;
-            Gast_Seite.Visibility = Visibility.Hidden;
+            Gast_Seite.Visibility = Visibility.Hidden;*/
         }
 
         private void Gast_bearbeiten_Click(object sender, RoutedEventArgs e)

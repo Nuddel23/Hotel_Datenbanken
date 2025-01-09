@@ -10,6 +10,6 @@
 
     <Grid>
         <Label Content="ERROR" Margin="140,42,140,232" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Center" FontSize="50"/>
-        <TextBox Name="Error_massage" Margin="140,230,140,145" HorizontalContentAlignment="Center"/>
+        <TextBox Name="Error_massage" Margin="140,232,140,100" MinHeight="40" MaxHeight="120" Height="Auto" HorizontalContentAlignment="Center"/>
     </Grid>
 </Page>

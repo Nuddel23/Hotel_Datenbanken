@@ -40,8 +40,9 @@ namespace Hotel_Datenbanken
             }
             catch (Exception ex)
             {
-                errorpage = new ErrorPage("Datenbank konnte nicht verbunden werden");
+                errorpage = new ErrorPage("Datenbank konnte nicht verbunden werden \n\r" + ex.Message);
                 Main.Content = errorpage;
+                ButtonMenu.Visibility = Visibility.Hidden;
             }
         }
 
