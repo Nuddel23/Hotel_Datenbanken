@@ -1,19 +1,7 @@
 ﻿using MySqlConnector;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Diagnostics;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Hotel_Datenbanken
 {
@@ -29,35 +17,149 @@ namespace Hotel_Datenbanken
             InitializeComponent();
             this.DB = DB;
             this.frame = frame;
-            Connection();
+            RB_TypeDefault.IsChecked = true;
         }
 
-        public void Connection()
+        public void SearchRoom(string prompt)
         {
-            var command = new MySqlCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='test'", DB);
+            DataTable availabelRooms = new DataTable();
 
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    combobox.Items.Add(reader.GetString(0));
-                    //test.Text = reader.GetString(i);
-                }
-            }
-        }
-
-        private void combobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            DataTable GastTablle = new DataTable();
-
-            using (var command = new MySqlCommand($"SELECT * FROM " + combobox.SelectedValue + "; ", DB))
+            using (var command = new MySqlCommand(prompt, DB))
             {
                 using (var adapter = new MySqlDataAdapter(command))
                 {
-                    adapter.Fill(GastTablle);
+                    if (availabelRooms != null)
+                        adapter.Fill(availabelRooms);
+                }
+
+            }
+            Tabel_Rooms.ItemsSource = availabelRooms.DefaultView;
+        }
+
+        private void CB_Additional_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var selectedAdditionals = Stack_Additional.Children.OfType<CheckBox>()
+                .Where(cb => cb.IsChecked == true)
+                .ToArray();
+
+            string[] Additionals = new string[selectedAdditionals.Length];
+
+            for (int i = 0; i < selectedAdditionals.Length; i++)
+            {
+                Additionals[i] = selectedAdditionals[i].Content.ToString()!;
+            }
+        }
+
+        private void Prop_Changed(object sender, System.Windows.RoutedEventArgs e)
+        {
+            CreatePrompt();
+
+        }
+
+        private void CreatePrompt()
+        {
+            string sqlPrompt = "" +
+                "SELECT Z.Zimmer_ID, Zimmertyp, Terrasse, Etage, Balkon, Aussicht_Strasse " +
+                "FROM zimmer Z " +
+                "LEFT JOIN buchung B " +
+                "ON B.Zimmer_ID = Z.Zimmer_ID " +
+                "WHERE 1=1";
+
+
+            RadioButton rbType = Stack_Type.Children.OfType<RadioButton>().Where(rb => rb.IsChecked == true).First();
+            switch (rbType.Content)
+            {
+                case "Standart":
+                    sqlPrompt += " AND Zimmertyp = \"Einzelzimmer\"";
+                    break;
+
+                case "Doppel":
+                    sqlPrompt += " AND Zimmertyp = \"Doppelzimmer\"";
+                    break;
+
+                case "Suite":
+                    sqlPrompt += " AND Zimmertyp = \"Suite\"";
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (CB_Location.IsChecked == true)
+            {
+                sqlPrompt += " AND Aussicht_Strasse = \"Nein\"";
+            }
+
+            if (CB_Balcony.IsChecked == true)
+            {
+                RadioButton rbBalcony = Stack_Properties.Children.OfType<RadioButton>().Where(rb => rb.IsChecked == true).First();
+                switch (rbBalcony.Content)
+                {
+                    case "Balkon: klein":
+                        sqlPrompt += " AND Balkon = \"Kleiner Balkon\"";
+                        break;
+
+                    case "Balkon: groß":
+                        sqlPrompt += " AND Balkon = \"Großer Balkon\"";
+                        break;
+
+                    case "Terrasse":
+                        sqlPrompt += " AND Terrasse = \"Ja\"";
+                        break;
+
+                    default:
+                        break;
                 }
             }
-            tabelle.ItemsSource = GastTablle.DefaultView;
+
+            if (DP_Start.SelectedDate != null)
+            {
+
+                sqlPrompt += " " +
+                    "AND Z.Zimmer_ID " +
+                    "Not IN( " +
+                    "SELECT B.Zimmer_ID " +
+                    "FROM buchung B " +
+                    "WHERE B.Check_in <= CAST(\"" + DP_End.SelectedDate!.Value.ToString("yyyy-MM-dd") + "\" AS DATE) " +
+                    "AND B.Check_out > CAST(\"" + DP_Start.SelectedDate.Value.ToString("yyyy-MM-dd") + "\" AS DATE)) ";
+            }
+
+            sqlPrompt += " GROUP BY Z.Zimmer_ID";
+
+            Debug.Print(sqlPrompt);
+
+            SearchRoom(sqlPrompt);
+        }
+
+        private void CB_Balcony_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            foreach (RadioButton rb in Stack_Properties.Children.OfType<RadioButton>())
+            {
+                rb.IsChecked = false;
+                rb.IsEnabled = (bool)CB_Balcony.IsChecked!;
+            }
+        }
+
+        private void DP_Start_Initialized(object sender, EventArgs e)
+        {
+            DP_Start.DisplayDateStart = DateTime.Now;
+        }
+
+        private void DateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DP_End.DisplayDateStart = DP_Start.SelectedDate;
+            if (DP_End.SelectedDate == null || DP_End.SelectedDate < DP_Start.SelectedDate)
+            {
+                DP_End.SelectedDate = DP_Start.SelectedDate;
+            }
+            DP_End.IsEnabled = true;
+            CreatePrompt();
+        }
+
+        private void DP_End_Initialized(object sender, EventArgs e)
+        {
+            DP_End.DisplayDateStart = DateTime.Now;
+            DP_End.IsEnabled = false;
         }
     }
 }
