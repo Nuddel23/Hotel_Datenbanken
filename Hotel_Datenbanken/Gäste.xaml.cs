@@ -59,7 +59,7 @@ namespace Hotel_Datenbanken
             gast_hinzufügen = new Gast_hinzufügen(DB);
             Window Windows = new Window();
             Windows.Content = gast_hinzufügen;
-            Windows.Width = 500;
+            Windows.Width = 800;
             Windows.Height = 500;
             Windows.Show();
 

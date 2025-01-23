@@ -23,22 +23,37 @@ namespace Hotel_Datenbanken
     public partial class Gast_hinzufügen : Page
     {
         MySqlConnection DB;
+        DataTable GastTabelle = new DataTable();
         DataTable AdressTabelle = new DataTable();
-        DataView DataView;
+        DataView DataView_gast;
+        DataView DataView_adresse;
         public Gast_hinzufügen(MySqlConnection DB)
         {
             InitializeComponent();
             this.DB = DB;
-            zeige_adresse();
+            tabellenfüllen();
 
-            DataView = new DataView(AdressTabelle);
+            DataView_gast = new DataView(GastTabelle);
+            DataView_adresse = new DataView(AdressTabelle);
 
-            tabelle.ItemsSource = DataView;
+            tabelle2.ItemsSource = DataView_gast;
+            tabelle.ItemsSource = DataView_adresse;
         }
 
-        void zeige_adresse()
+        public int returngast()
         {
+            return 2;
+        }
 
+        void tabellenfüllen()
+        {
+            using (var command = new MySqlCommand($"SELECT * FROM gast;", DB))
+            {
+                using (var adapter = new MySqlDataAdapter(command))
+                {
+                    adapter.Fill(GastTabelle);
+                }
+            }
             using (var command = new MySqlCommand($"SELECT `adresse`.`Straße`, `adresse`.`Hausnummer`, `adresse`.`PLZ`, `plz`.`Ort` FROM `adresse` LEFT JOIN `plz` ON `adresse`.`PLZ` = `plz`.`PLZ`;", DB))
             {
                 using (var adapter = new MySqlDataAdapter(command))
@@ -47,12 +62,6 @@ namespace Hotel_Datenbanken
                 }
             }
         }
-
-        private void Bestätigen_Click(object sender, RoutedEventArgs e)
-        {
-            Telefonnummer.Text = tabelle.SelectedIndex.ToString();
-        }
-
         private void Filter_LostFocus(object sender, RoutedEventArgs e)
         {
             TextBox textbox_sender = (TextBox)sender;
@@ -71,9 +80,9 @@ namespace Hotel_Datenbanken
             }
         }
 
-        private void Filter_TextChanged(object sender, TextChangedEventArgs e)
+        private void Filter_gast_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is TextBox filtertextbox && DataView != null)
+            if (sender is TextBox filtertextbox && DataView_gast != null)
             {
                 string filtertext = filtertextbox.Text;
 
@@ -81,17 +90,128 @@ namespace Hotel_Datenbanken
                 if (string.IsNullOrWhiteSpace(filtertext) || filtertext == filtertextbox.Name)
                 {
                     // Wenn das Textfeld leer ist, wird der Filter entfernt
-                    DataView.RowFilter = string.Empty;
+                    DataView_gast.RowFilter = string.Empty;
                 }
                 else
                 {
                     // Filter nach Name anwenden (oder anderen Spalten)
-                    DataView.RowFilter = $"{filtertextbox.Name} LIKE '%{filtertext}%'";
+                    DataView_gast.RowFilter = $"{filtertextbox.Name} LIKE '%{filtertext}%'";
 
                 }
 
             }
         }
+
+        private void Filter_adresse_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox filtertextbox && DataView_adresse != null)
+            {
+                string filtertext = filtertextbox.Text;
+
+                // Filter auf die DataView anwenden
+                if (string.IsNullOrWhiteSpace(filtertext) || filtertext == filtertextbox.Name)
+                {
+                    // Wenn das Textfeld leer ist, wird der Filter entfernt
+                    DataView_adresse.RowFilter = string.Empty;
+                }
+                else
+                {
+                    // Filter nach Name anwenden (oder anderen Spalten)
+                    DataView_adresse.RowFilter = $"{filtertextbox.Name} LIKE '%{filtertext}%'";
+
+                }
+
+            }
+        }
+
+        private void Bestätigen_Click(object sender, RoutedEventArgs e)
+        {
+            //Telefonnummer.Text = tabelle.SelectedIndex.ToString();
+            string vorname = Vorname.Text, nachname = Nachname.Text, email = Email.Text, telefonnummer = Telefonnummer.Text;
+            string straße = Straße.Text, hausnummer = Hausnummer.Text, ort = Ort.Text, plz = PLZ.Text;
+
+            // Check if PLZ exists
+            string query = $"SELECT * FROM plz WHERE PLZ = {plz}";
+            MySqlCommand cmd = new(query, DB);
+            MySqlDataReader reader = cmd.ExecuteReader();
+            if (!reader.HasRows)
+            {
+                reader.Close();
+                // Insert new PLZ
+                query = $"INSERT INTO plz (PLZ, Ort) VALUES (\"{plz}\", \"{ort}\")";
+                using MySqlCommand insertCmd = new(query, DB);
+                insertCmd.ExecuteNonQuery();
+            }
+            reader.Close();
+
+            // Check if Address exists
+            query = $"SELECT Adress_ID FROM adresse WHERE Straße = \"{straße}\" AND Hausnummer = \"{hausnummer}\" AND PLZ = \"{plz}\"";
+            int Adr_ID;
+            using (cmd = new(query, DB))
+            {
+                reader = cmd.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    reader.Close();
+
+                    // Insert new Address
+                    query = $"INSERT INTO adresse (Straße, Hausnummer, PLZ) VALUES (\"{straße}\", \"{hausnummer}\", \"{plz}\")";
+                    using MySqlCommand insertCmd = new(query, DB);
+                    insertCmd.ExecuteNonQuery();
+
+                    query = "SELECT Adress_ID FROM adresse ORDER BY Adress_ID DESC";
+                    MySqlCommand scopeCmd = new(query, DB);
+                    reader = scopeCmd.ExecuteReader();
+                    reader.Read();
+                    Adr_ID = reader.GetInt32(0);
+                    reader.Close();
+                }
+                else
+                {
+                    reader.Read();
+                    Adr_ID = reader.GetInt32(0);
+                    reader.Close();
+                }
+                
+            }
+
+            query = $"SELECT Gast_ID FROM Gast WHERE Vorname = \"{vorname}\" AND Nachname = \"{nachname}\" AND Email = \"{email}\" AND Telefonnummer = \"{telefonnummer}\"";
+            int Gast_ID;
+            using (cmd = new(query, DB))
+            {
+                cmd.ExecuteNonQuery();
+
+                reader = cmd.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    reader.Close();
+                    // Insert new Address
+                    query = $"INSERT INTO gast (Vorname, Nachname, Email, Telefonnummer) VALUES (\"{vorname}\", \"{nachname}\", \"{email}\", \"{telefonnummer}\")";
+                    using MySqlCommand insertCmd = new(query, DB);
+                    insertCmd.ExecuteNonQuery();
+
+                    query = "SELECT Gast_ID FROM Gast ORDER BY Gast_ID DESC";
+              
+                    MySqlCommand scopeCmd = new(query, DB);
+                    reader = scopeCmd.ExecuteReader();
+                    reader.Read();
+                    Gast_ID = reader.GetInt32(0);
+                    reader.Close();
+                }
+                else
+                {
+                    reader.Read();
+                    Gast_ID = reader.GetInt32(0);
+                    reader.Close();
+                }
+            }
+
+            query = $"INSERT INTO gast_hat_adresse (Gast_ID, Adress_ID) VALUES (\"{Gast_ID}\",\"{Adr_ID}\")";
+            using (cmd = new(query, DB))
+            {
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
-    
+
 }
