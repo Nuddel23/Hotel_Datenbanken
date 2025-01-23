@@ -9,7 +9,7 @@
       Title="Gast_hinzufügen">
 
     <Grid>
-        <StackPanel Orientation="Vertical" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100,60"  >
+        <StackPanel Orientation="Vertical" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type TextBox}">
                     <Setter Property="Margin" Value="0,10,0,0"/>
@@ -22,11 +22,18 @@
             <TextBox x:Name="Nachname" Text="Nachname"/>
             <TextBox x:Name="Email" Text="Email"/>
             <TextBox x:Name="Telefonnummer" Text="Telefonnummer"/>
-            <TextBox x:Name="Straße" Text="Straße"/>
-            <TextBox x:Name="Hausnummer" Text="Hausnummer"/>
-            <TextBox x:Name="PLZ" Text="PLZ"/>
-            <TextBox x:Name="Ort" Text="Ort"/>
             <Button x:Name="Bestätigen" Content="Bestätigen" Click="Bestätigen_Click"/>
         </StackPanel>
+        <Grid Margin="150,20,20,20">
+            <Label Content="Adresse:" Margin="0,15"/>
+            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,35,0,0">
+                <TextBox x:Name="Straße" Text="Straße"                  MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_TextChanged"/>
+                <TextBox x:Name="Hausnummer" Text="Hausnummer"          MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_TextChanged"/>
+                <TextBox x:Name="PLZ" Text="PLZ"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_TextChanged"/>
+                <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_TextChanged"/>
+            </StackPanel>
+            <Label Content="Sotieren:" Margin="0,55"/>
+            <DataGrid Name="tabelle" Margin="0,80,0,0" IsTextSearchEnabled="True"/>
+        </Grid>
     </Grid>
 </Page>

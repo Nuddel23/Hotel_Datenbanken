@@ -56,7 +56,13 @@ namespace Hotel_Datenbanken
 
         private void Gast_hinzufügen_Click(object sender, RoutedEventArgs e)
         {
-            gast_hinzufügen = new Gast_hinzufügen();
+            gast_hinzufügen = new Gast_hinzufügen(DB);
+            Window Windows = new Window();
+            Windows.Content = gast_hinzufügen;
+            Windows.Width = 500;
+            Windows.Height = 500;
+            Windows.Show();
+
             /*Gast_Frame.Content = new Gast_hinzufügen();
             Gast_Frame.Visibility = Visibility.Visible;
             Gast_Seite.Visibility = Visibility.Hidden;*/
