@@ -9,13 +9,11 @@
       Title="Gäste">
 
     <Grid>
-        <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top">
-            <Button x:Name="Gast" Content="Gast" Width="100" Click="Gast_Main" />
+        <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="5,5">
             <Button x:Name="Gast_hinzufügen" Content="Gast_hinzufügen" Width="100" Click="Gast_hinzufügen_Click" />
-            <Button x:Name="Gast_bearbeiten" Content="Gast_bearbeiten" Width="100" Click="Gast_bearbeiten_Click" />
+            <CheckBox x:Name="Gast_bearbeiten" Content="bearbeiten" Width="100" Click="Gast_bearbeiten_IsEnabledChanged" Margin="5,5,0,0"/>
         </StackPanel>
-        <Frame x:Name="Gast_Frame" NavigationUIVisibility="Hidden" VerticalAlignment="Top" Margin="0,20,0,0" Visibility="Hidden"/>
-        <Grid x:Name="Gast_Seite" Visibility="Visible">
+        <Grid x:Name="Gast_Seite" Visibility="Visible" Margin="0,5">
             <Label Content="Filter:" Margin="0,15"/>
             <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,35,0,0">
                 <TextBox x:Name="Vorname" Text="Vorname"                MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
@@ -28,7 +26,7 @@
                 <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
             </StackPanel>
             <Label Content="Sotieren:" Margin="0,55"/>
-            <DataGrid Name="tabelle" Margin="0,80,0,0" IsTextSearchEnabled="True"/>
+            <DataGrid Name="tabelle" Margin="0,80,0,0" IsTextSearchEnabled="True" IsReadOnly="True" CellEditEnding="tabelle_CellEditEnding"/>
         </Grid>
     </Grid>
 </Page>

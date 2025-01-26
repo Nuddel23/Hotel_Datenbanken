@@ -32,11 +32,11 @@
         </Grid>
         <Grid Margin="20,0,350,30">
             <Label Content="Sotieren:" Margin="0,55"/>
-            <DataGrid Name="tabelle2" Margin="0,80,0,35" IsTextSearchEnabled="True"/>
+            <DataGrid Name="tabelle2" Margin="0,80,0,35" IsTextSearchEnabled="True" IsReadOnly="True"/>
         </Grid>
         <Grid Margin="470,0,40,30">
             <Label Content="Sotieren:" Margin="0,55"/>
-            <DataGrid Name="tabelle" Margin="0,80,0,37" IsTextSearchEnabled="True"/>
+            <DataGrid Name="tabelle" Margin="0,80,0,37" IsTextSearchEnabled="True" IsReadOnly="True"/>
         </Grid>
     </Grid>
 </Page>
