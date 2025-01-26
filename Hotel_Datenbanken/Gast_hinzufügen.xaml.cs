@@ -211,6 +211,21 @@ namespace Hotel_Datenbanken
             {
                 cmd.ExecuteNonQuery();
             }
+
+            MessageBox.Show("Gast wurde erfolgreich hinzugefügt");
+            Nachname.Text = Nachname.Name;
+            Vorname.Text = Vorname.Name;
+            Email.Text = Email.Name;
+            Telefonnummer.Text = Telefonnummer.Name;
+            Straße.Text = Straße.Name;
+            Hausnummer.Text = Hausnummer.Name;
+            PLZ.Text = PLZ.Name;
+            Ort.Text = Ort.Name;
+        }
+
+        private void Abbrechen_Click(object sender, RoutedEventArgs e)
+        {
+            Window.GetWindow(this)?.Close();
         }
     }
 

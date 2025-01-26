@@ -45,7 +45,7 @@ namespace Hotel_Datenbanken
         void zeige_Gäste()
         {
 
-            using (var command = new MySqlCommand($"SELECT `gast`.`Vorname`, `gast`.`Nachname`, `gast`.`Email`, `gast`.`Telefonnummer`, `adresse`.`Straße`, `adresse`.`Hausnummer`, `adresse`.`PLZ`, `plz`.`Ort`\r\nFROM `gast`\r\n\t, `adresse` \r\n\tLEFT JOIN `plz` ON `adresse`.`PLZ` = `plz`.`PLZ`;", DB))
+            using (var command = new MySqlCommand($"SELECT `gast`.`Vorname`, `gast`.`Nachname`, `gast`.`Email`, `gast`.`Telefonnummer`, `adresse`.`Straße`, `adresse`.`Hausnummer`, `adresse`.`PLZ`, `plz`.`Ort`\r\nFROM `gast`\r\n\tLEFT JOIN `gast_hat_adresse` ON `gast`.`Gast_ID` = `gast_hat_adresse`.`Gast_ID` \r\n\tLEFT JOIN `adresse` ON `gast_hat_adresse`.`Adress_ID` = `adresse`.`Adress_ID` \r\n\tLEFT JOIN `plz` ON `adresse`.`PLZ` = `plz`.`PLZ`;", DB))
             {
                 using (var adapter = new MySqlDataAdapter(command))
                 {
@@ -54,14 +54,15 @@ namespace Hotel_Datenbanken
             }
         }
 
+        Window Gast_hinzufügen_Window;
         private void Gast_hinzufügen_Click(object sender, RoutedEventArgs e)
         {
             gast_hinzufügen = new Gast_hinzufügen(DB);
-            Window Windows = new Window();
-            Windows.Content = gast_hinzufügen;
-            Windows.Width = 800;
-            Windows.Height = 500;
-            Windows.Show();
+            Gast_hinzufügen_Window = new Window();
+            Gast_hinzufügen_Window.Content = gast_hinzufügen;
+            Gast_hinzufügen_Window.Width = 800;
+            Gast_hinzufügen_Window.Height = 500;
+            Gast_hinzufügen_Window.Show();
 
             /*Gast_Frame.Content = new Gast_hinzufügen();
             Gast_Frame.Visibility = Visibility.Visible;

@@ -9,9 +9,9 @@
       Title="Gast_hinzufügen">
 
     <Grid Margin="0,0,0,0" Width="800" Height="500">
-        <Grid Margin="20,20,20,20">
+        <Grid Margin="20,0,20,20">
             <Label Content="Gast:" Margin="0,15"/>
-            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,35,0,0">
+            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,15,0,0">
                 <TextBox x:Name="Vorname" Text="Vorname"                 MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
                 <TextBox x:Name="Nachname" Text="Nachname"               MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
                 <TextBox x:Name="Email" Text="Email"                     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
@@ -20,22 +20,23 @@
 
             <Grid Margin="450,0,0,0">
                 <Label Content="Adresse:" Margin="0,15"/>
-                <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,35,0,0">
+                <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,15,0,0">
                     <TextBox x:Name="Straße" Text="Straße"                  MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
                     <TextBox x:Name="Hausnummer" Text="Hausnummer"          MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
                     <TextBox x:Name="PLZ" Text="PLZ"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
                     <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
-                    <Button x:Name="Bestätigen" Content="Bestätigen" Click="Bestätigen_Click"/>
                 </StackPanel>
             </Grid>
+            <Button x:Name="Bestätigen" Height="20" Width="70" Content="Bestätigen" Click="Bestätigen_Click" Margin="670,430,20,10"/>
+            <Button x:Name="Abbrechen" Height="20" Width="70" Click="Abbrechen_Click" Margin="580,430,100,10">Abbrechen</Button>
         </Grid>
-        <Grid Margin="20,18,350,20">
+        <Grid Margin="20,0,350,30">
             <Label Content="Sotieren:" Margin="0,55"/>
-            <DataGrid Name="tabelle2" Margin="0,80,0,30" IsTextSearchEnabled="True"/>
+            <DataGrid Name="tabelle2" Margin="0,80,0,35" IsTextSearchEnabled="True"/>
         </Grid>
-        <Grid Margin="470,18,40,20">
+        <Grid Margin="470,0,40,30">
             <Label Content="Sotieren:" Margin="0,55"/>
-            <DataGrid Name="tabelle" Margin="0,80,0,30" IsTextSearchEnabled="True"/>
+            <DataGrid Name="tabelle" Margin="0,80,0,37" IsTextSearchEnabled="True"/>
         </Grid>
     </Grid>
 </Page>
