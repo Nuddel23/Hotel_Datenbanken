@@ -9,7 +9,7 @@
       Title="Zimmer_Buchen">
 
     <Grid>
-        <DataGrid Name="tabelle" Margin="0,20,0,0"/>
+        <Rectangle Name="Background" Fill="LightGray" Margin="0,20,0,0"/>
         <GroupBox HorizontalAlignment="Left" Height="100" Header="Art" BorderBrush="DarkGray" Margin="20,45,0,0" VerticalAlignment="Top" Width="124">
             <StackPanel x:Name="Stack_Type">
                 <RadioButton x:Name="RB_TypeDefault" Content="Standart" VerticalAlignment="Top" Height="20" Checked="Prop_Changed"/>
@@ -43,6 +43,59 @@
                 <DatePicker x:Name="DP_End" Initialized="DP_End_Initialized" SelectedDateChanged="DateChanged"/>
             </StackPanel>
         </GroupBox>
-        <DataGrid x:Name="Tabel_Rooms" HorizontalAlignment="Left" Height="401" Margin="360,40,0,0" VerticalAlignment="Top" Width="428"/>
+        <DataGrid x:Name="Tabel_Rooms" HorizontalAlignment="Left" Height="401" Margin="360,34,0,0" VerticalAlignment="Top" Width="428"/>
+        <Canvas/>
+        <Button x:Name="Btn_Guest" Content="Gast Informationen" Click="BtnGuest_Click" HorizontalAlignment="Left" Margin="103,370,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="Btn_Confirm" Content="Bestätigen" Click="BtnConfirm_Click" IsEnabled="False" HorizontalAlignment="Left" Margin="128,405,0,0" VerticalAlignment="Top"/>
+        <Grid x:Name="ConfirmationScreen" Visibility="Visible">
+            <Rectangle Fill="Gray" Opacity="0.5"/>
+            <StackPanel Background="LightGray" Width="350" Height="400">
+                <Label Content="Gast" FontWeight="Bold"/>
+                <Border BorderBrush="Black" Width="300" BorderThickness="0.1" CornerRadius="2">
+                    <StackPanel>
+                        <StackPanel Width="300" Orientation="Horizontal" Margin="0,5">
+                            <Label Width="150" Content="Vorname" x:Name="Lbl_Name"/>
+                            <Label Content="Nachname" x:Name="Lbl_Lastname"/>
+                        </StackPanel>
+                        <Separator/>
+                        <StackPanel Width="300" Orientation="Horizontal" Margin="0,5">
+                            <Label Width="150" Content="E-Mail" x:Name="Lbl_Email"/>
+                            <Label Content="Tel." x:Name="Lbl_Tel"/>
+                        </StackPanel>
+                        <Separator/>
+                        <StackPanel Width="300" Orientation="Horizontal" Margin="0,5">
+                            <Label Width="150" Content="Adresse" x:Name="Lbl_Address"/>
+                            <Label Content="PLZ" x:Name="Lbl_PLZ" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Label Margin="5"/>
+                <Label Content="Buchung" FontWeight="Bold"/>
+                <Border BorderBrush="Black" Width="300" BorderThickness="0.1" CornerRadius="2">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Width="300" Orientation="Horizontal" Margin="0,2">
+                            <Label Width="150" Content="RaumNr" x:Name="Lbl_RoomNr"/>
+                            <Label Content="RaumTyp" x:Name="Lbl_RoomTyp"/>
+                        </StackPanel>
+                        <Separator/>
+                        <StackPanel Width="300" Orientation="Horizontal" Margin="0,2">
+                            <Label Width="150" Content="RaumAussicht" x:Name="Lbl_RoomLocation"/>
+                            <Label Content="RaumExtra" x:Name="Lbl_RoomExtra"/>
+                        </StackPanel>
+                        <Separator/>
+                        <StackPanel Width="300" Orientation="Horizontal" Margin="0,2">
+                            <Label Width="150" Content="Von" x:Name="Lbl_Start"/>
+                            <Label Content="Bis" x:Name="Lbl_End"/>
+                        </StackPanel>
+                        <Separator/>
+                        <TextBlock Width="290" Text="Zusatz" x:Name="Lbl_Extra" Margin="5,7"/>
+                    </StackPanel>
+                </Border>
+                <StackPanel Width="300" Orientation="Horizontal" Margin="0, 20">
+                    <Button Width="140" x:Name="Btn_SecConfirm" Content="Bestätigen" Margin="5,0" Click="Btn_SecConfirm_Click"/>
+                    <Button Width="140" x:Name="Btn_Return" Content="Abbrechen" Margin="5,0" Click="Btn_Return_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

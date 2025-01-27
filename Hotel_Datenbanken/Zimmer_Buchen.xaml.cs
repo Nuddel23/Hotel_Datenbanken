@@ -12,6 +12,8 @@ namespace Hotel_Datenbanken
     {
         MySqlConnection DB;
         Frame frame;
+        int guestId;
+
         public Zimmer_Buchen(MySqlConnection DB, Frame frame)
         {
             InitializeComponent();
@@ -33,7 +35,7 @@ namespace Hotel_Datenbanken
                 }
 
             }
-            Tabel_Rooms.ItemsSource = availabelRooms.DefaultView;
+            Tabel_Rooms.ItemsSource = availabelRooms!.DefaultView;
         }
 
         private void CB_Additional_Checked(object sender, System.Windows.RoutedEventArgs e)
@@ -160,6 +162,35 @@ namespace Hotel_Datenbanken
         {
             DP_End.DisplayDateStart = DateTime.Now;
             DP_End.IsEnabled = false;
+        }
+
+        private void BtnGuest_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+
+
+        }
+
+        private void BtnConfirm_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+            ConfirmationScreen.Visibility = System.Windows.Visibility.Visible;
+
+
+        }
+
+        private void Btn_SecConfirm_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+
+
+        }
+
+        private void Btn_Return_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+            ConfirmationScreen.Visibility = System.Windows.Visibility.Hidden;
+
         }
     }
 }
