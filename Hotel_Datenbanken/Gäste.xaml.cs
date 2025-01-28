@@ -29,6 +29,8 @@ namespace Hotel_Datenbanken
         DataTable GastTablle = new DataTable();
         DataView DataView;
         Gast_hinzufügen gast_hinzufügen;
+        DataRowView row;
+        
 
 
         public Gäste(MySqlConnection DB, Frame frame)
@@ -64,10 +66,6 @@ namespace Hotel_Datenbanken
             Gast_hinzufügen_Window.Width = 800;
             Gast_hinzufügen_Window.Height = 500;
             Gast_hinzufügen_Window.Show();
-
-            /*Gast_Frame.Content = new Gast_hinzufügen();
-            Gast_Frame.Visibility = Visibility.Visible;
-            Gast_Seite.Visibility = Visibility.Hidden;*/
         }
 
         private void Name_LostFocus(object sender, RoutedEventArgs e)
@@ -149,6 +147,36 @@ namespace Hotel_Datenbanken
                 insertCmd = new(sqlUpdate3, DB);
                 insertCmd.ExecuteNonQuery();
 
+            }
+        }
+
+        private void Gast_löschen_Click(object sender, RoutedEventArgs e)
+        {
+            if (tabelle.SelectedIndex == -1)
+            {
+                MessageBox.Show("nichts wurde ausgewählt");
+            }
+            else
+            {
+                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show($"Möchtest du den Gast wirklich löschen?", "Delete Confirmation", System.Windows.MessageBoxButton.YesNo);
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    var Gast_ID = row["Gast_ID"]; // Primärschlüssel
+
+                    string sqlDelete = $"DELETE FROM `gast` WHERE `gast`.`Gast_ID` = \"{Gast_ID}\" ";
+                    
+                    MySqlCommand deleteCmd = new(sqlDelete, DB);
+                    
+                    deleteCmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private void tabelle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (tabelle.SelectedIndex != -1)
+            {
+                row = (DataRowView)tabelle.SelectedItem;
             }
         }
     }

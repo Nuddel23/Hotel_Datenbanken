@@ -12,6 +12,7 @@
         <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="5,5">
             <Button x:Name="Gast_hinzufügen" Content="Gast_hinzufügen" Width="100" Click="Gast_hinzufügen_Click" />
             <CheckBox x:Name="Gast_bearbeiten" Content="bearbeiten" Width="100" Click="Gast_bearbeiten_IsEnabledChanged" Margin="5,5,0,0"/>
+            <Button x:Name="Gast_löschen" Content="Löschen" Width="100" Click="Gast_löschen_Click"/>
         </StackPanel>
         <Grid x:Name="Gast_Seite" Visibility="Visible" Margin="0,5">
             <Label Content="Filter:" Margin="0,15"/>
@@ -26,7 +27,7 @@
                 <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
             </StackPanel>
             <Label Content="Sotieren:" Margin="0,55"/>
-            <DataGrid Name="tabelle" Margin="0,80,0,0" IsTextSearchEnabled="True" IsReadOnly="True" CellEditEnding="tabelle_CellEditEnding"/>
+            <DataGrid Name="tabelle" Margin="0,80,0,0" IsTextSearchEnabled="True" IsReadOnly="True" CellEditEnding="tabelle_CellEditEnding" SelectionChanged="tabelle_SelectionChanged"/>
         </Grid>
     </Grid>
 </Page>
