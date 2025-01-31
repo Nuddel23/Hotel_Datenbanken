@@ -12,14 +12,17 @@ namespace Hotel_Datenbanken
     {
         MySqlConnection DB;
         Frame frame;
-        int guestId;
+        BuchungsStructure.NewBuchung buchung = new BuchungsStructure.NewBuchung();
+        Dictionary<string, int> additionals = new Dictionary<string, int>();
+        string roomType;
 
         public Zimmer_Buchen(MySqlConnection DB, Frame frame)
         {
-            InitializeComponent();
             this.DB = DB;
             this.frame = frame;
+            InitializeComponent();
             RB_TypeDefault.IsChecked = true;
+            Debug.Print(Calculate.RechnungPrice(3, DB).ToString());
         }
 
         public void SearchRoom(string prompt)
@@ -33,29 +36,59 @@ namespace Hotel_Datenbanken
                     if (availabelRooms != null)
                         adapter.Fill(availabelRooms);
                 }
-
+                
             }
             Tabel_Rooms.ItemsSource = availabelRooms!.DefaultView;
+           
+        }
+
+        private void Stack_Additional_Initialized(object sender, EventArgs e)
+        {
+            Calculate.RechnungPrice(2, DB);
+            StackPanel stackAdditional = (StackPanel)sender;
+            string query = "SELECT Zusatzleistungs_ID, Zusatzleistung FROM zusatzleistung";
+
+            MySqlCommand cmd = new(query, DB);
+            MySqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                CheckBox CBAdditional = new CheckBox();
+                CBAdditional.Checked += CB_Additional_Checked;
+                CBAdditional.Name = "CB_" + reader.GetInt32(0);
+                CBAdditional.Content = reader.GetString(1); 
+                CBAdditional.Height = 30;
+                stackAdditional.Children.Add(CBAdditional);
+
+                additionals.Add(reader.GetString(1), reader.GetInt32(0));
+                
+            }
+            reader.Close();
+            
         }
 
         private void CB_Additional_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            var selectedAdditionals = Stack_Additional.Children.OfType<CheckBox>()
+            CheckBox[] selectedCBAdditionals = Stack_Additional.Children.OfType<CheckBox>()
                 .Where(cb => cb.IsChecked == true)
                 .ToArray();
 
-            string[] Additionals = new string[selectedAdditionals.Length];
+            List<int> selectdedAdditional = new List<int>();
 
-            for (int i = 0; i < selectedAdditionals.Length; i++)
+            foreach (CheckBox cb in selectedCBAdditionals)
             {
-                Additionals[i] = selectedAdditionals[i].Content.ToString()!;
+                if(additionals.TryGetValue(cb.Content.ToString()!, out int id))
+                {
+
+                    selectdedAdditional.Add(id);
+                }
             }
+            buchung.Additionals = selectdedAdditional;
+
         }
 
         private void Prop_Changed(object sender, System.Windows.RoutedEventArgs e)
         {
             CreatePrompt();
-
         }
 
         private void CreatePrompt()
@@ -69,7 +102,8 @@ namespace Hotel_Datenbanken
 
 
             RadioButton rbType = Stack_Type.Children.OfType<RadioButton>().Where(rb => rb.IsChecked == true).First();
-            switch (rbType.Content)
+            roomType = rbType.Content.ToString()!;
+            switch (roomType)
             {
                 case "Standart":
                     sqlPrompt += " AND Zimmertyp = \"Einzelzimmer\"";
@@ -128,8 +162,6 @@ namespace Hotel_Datenbanken
 
             sqlPrompt += " GROUP BY Z.Zimmer_ID";
 
-            Debug.Print(sqlPrompt);
-
             SearchRoom(sqlPrompt);
         }
 
@@ -153,9 +185,16 @@ namespace Hotel_Datenbanken
             if (DP_End.SelectedDate == null || DP_End.SelectedDate < DP_Start.SelectedDate)
             {
                 DP_End.SelectedDate = DP_Start.SelectedDate;
+                DP_End.IsEnabled = true;
             }
-            DP_End.IsEnabled = true;
+            if (DP_Start.SelectedDate == null)
+            {
+                    DP_End.SelectedDate = null;
+                    DP_End.IsEnabled = false;
+            }
+
             CreatePrompt();
+            ValidateSelection();
         }
 
         private void DP_End_Initialized(object sender, EventArgs e)
@@ -176,13 +215,30 @@ namespace Hotel_Datenbanken
 
             ConfirmationScreen.Visibility = System.Windows.Visibility.Visible;
 
+        }
 
+        private void ValidateSelection()
+        {
+            bool DateIsChecked = DP_Start.SelectedDate != null && DP_End.SelectedDate != null;
+            bool RoomIsChecked = Tabel_Rooms.SelectedIndex != -1;
+
+            if (DateIsChecked && RoomIsChecked)
+            {
+                buchung.CheckIn = DateOnly.FromDateTime(DP_Start.SelectedDate!.Value);
+                buchung.CheckOut = DateOnly.FromDateTime(DP_End.SelectedDate!.Value);
+                buchung.RoomNr = (int)((DataRowView)Tabel_Rooms.SelectedItem)[0];
+                Btn_Confirm.IsEnabled = true;
+            }
+            else
+            {
+                Btn_Confirm.IsEnabled = false;
+            }
         }
 
         private void Btn_SecConfirm_Click(object sender, System.Windows.RoutedEventArgs e)
         {
 
-
+            Debug.Print(Calculate.BuchungPrice(buchung, DB).ToString());
 
         }
 
@@ -190,6 +246,20 @@ namespace Hotel_Datenbanken
         {
 
             ConfirmationScreen.Visibility = System.Windows.Visibility.Hidden;
+
+        }
+
+        private void Tabel_Rooms_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            
+            ValidateSelection();
+        }
+
+        private void GetFullPrice()
+        {
+            int anzDays = buchung.CheckOut.DayNumber - buchung.CheckIn.DayNumber;
+
+            string query = $"SELECT Preis From preis WHERE Kategorie = {roomType}";
 
         }
     }

@@ -27,8 +27,8 @@
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Zusatzleistungen" BorderBrush="DarkGray" Margin="165,45,455,0" Height="160" VerticalAlignment="Top">
-            <StackPanel x:Name="Stack_Additional">
-                <CheckBox x:Name="CB_AddBreakfast" Content="Frühstück" VerticalAlignment="Top" Height="30" Checked="CB_Additional_Checked"/>
+            <StackPanel x:Name="Stack_Additional" Initialized="Stack_Additional_Initialized">
+                <CheckBox x:Name="CB_AddBreakfast"  Content="Frühstück" VerticalAlignment="Top" Height="30" Checked="CB_Additional_Checked"/>
                 <CheckBox x:Name="CB_AddFridge" Content="Kühlschrank" VerticalAlignment="Top" Height="30" Checked="CB_Additional_Checked"/>
                 <CheckBox x:Name="CB_AddTV" Content="Fernseher" VerticalAlignment="Top" Height="30" Checked="CB_Additional_Checked"/>
                 <CheckBox x:Name="CB_AddPayTV" Content="PayTV" VerticalAlignment="Top" Height="30" Checked="CB_Additional_Checked"/>
@@ -43,11 +43,11 @@
                 <DatePicker x:Name="DP_End" Initialized="DP_End_Initialized" SelectedDateChanged="DateChanged"/>
             </StackPanel>
         </GroupBox>
-        <DataGrid x:Name="Tabel_Rooms" HorizontalAlignment="Left" Height="401" Margin="360,34,0,0" VerticalAlignment="Top" Width="428"/>
+        <DataGrid x:Name="Tabel_Rooms" HorizontalAlignment="Left" Height="401" Margin="360,34,0,0" VerticalAlignment="Top" Width="428" IsReadOnly="True" CanUserAddRows="False" SelectedCellsChanged="Tabel_Rooms_SelectedCellsChanged"/>
         <Canvas/>
         <Button x:Name="Btn_Guest" Content="Gast Informationen" Click="BtnGuest_Click" HorizontalAlignment="Left" Margin="103,370,0,0" VerticalAlignment="Top"/>
         <Button x:Name="Btn_Confirm" Content="Bestätigen" Click="BtnConfirm_Click" IsEnabled="False" HorizontalAlignment="Left" Margin="128,405,0,0" VerticalAlignment="Top"/>
-        <Grid x:Name="ConfirmationScreen" Visibility="Visible">
+        <Grid x:Name="ConfirmationScreen" Visibility="Hidden">
             <Rectangle Fill="Gray" Opacity="0.5"/>
             <StackPanel Background="LightGray" Width="350" Height="400">
                 <Label Content="Gast" FontWeight="Bold"/>
