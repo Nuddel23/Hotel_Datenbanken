@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotel_Datenbanken"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="720" Width="1280">
     <Grid>
         <StackPanel Name="ButtonMenu" Orientation="Horizontal" Height="20" VerticalAlignment="Top">
             <Button x:Name="Homepage" Content="Homepage" Width="100" Click="Homepage_Click"/>
             <Button x:Name="Zimmer_Buchen" Content="Zimmer Buchen" Width="100" Click="Zimmer_Buchen_Click"/>
             <Button x:Name="Gäste" Content="Gäste" Width="100" Click="Gäste_Click"/>
-
+            <Button x:Name="Buchungen_einsehen" Content="Buchungen einsehen" Width="120" Click="Buchungen_einsehen_Click"/>
         </StackPanel>
         <Frame x:Name="Main" NavigationUIVisibility="Hidden" VerticalAlignment="Top" Margin="0,20,0,0"/>
     </Grid>

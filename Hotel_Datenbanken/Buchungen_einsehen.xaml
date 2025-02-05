@@ -1,0 +1,85 @@
+﻿<Page x:Class="Hotel_Datenbanken.Buchungen_einsehen"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Hotel_Datenbanken"
+      mc:Ignorable="d" d:DesignWidth="1280"
+      Title="Buchungen_einsehen" Height="700">
+
+    <Grid Margin="0,0,0,0">
+
+        <Rectangle Name="Background" Fill="LightGray" Height="720" VerticalAlignment="Top" Margin="0,10,0,0" RenderTransformOrigin="0.504,0.5"/>
+
+        <GroupBox HorizontalAlignment="Left" Height="79" Header="Zimmernummer" BorderBrush="DarkGray" Margin="10,10,0,0" VerticalAlignment="Top" Width="124">
+            <StackPanel x:Name="Stack_Roomnummber">
+                <TextBox x:Name="Zimmernummer" Text="Zimmernummer" MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox HorizontalAlignment="Left" Height="79" Header="Art" BorderBrush="DarkGray" Margin="10,374,0,0" VerticalAlignment="Top" Width="124">
+            <StackPanel x:Name="Stack_Type">
+                <RadioButton x:Name="RB_TypeDefault" Content="Standart" VerticalAlignment="Top" Height="20" />
+                <RadioButton x:Name="RB_TypeDouble" Content="Doppel" VerticalAlignment="Center" Height="20"/>
+                <RadioButton x:Name="RB_TypeSuite" Content="Suite" VerticalAlignment="Bottom" Height="20" />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox  HorizontalAlignment="Left" Height="150" Header="Zimmer" BorderBrush="DarkGray" Margin="10,224,0,0" VerticalAlignment="Top" Width="124">
+            <StackPanel x:Name="Stack_Properties">
+                <CheckBox x:Name="CB_Location" Content="Nicht Straße" VerticalAlignment="Top" Height="30" RenderTransformOrigin="0.5,0.5">
+                    <CheckBox.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform AngleX="-1.79"/>
+                            <RotateTransform/>
+                            <TranslateTransform X="0.469"/>
+                        </TransformGroup>
+                    </CheckBox.RenderTransform>
+                </CheckBox>
+                <CheckBox x:Name="CB_Balcony" Content="Balkon" VerticalAlignment="Top" Height="30" />
+                <RadioButton x:Name="RB_PropBalconyLittle" IsEnabled="False" Content="Balkon: klein" VerticalAlignment="Top" Height="25"  />
+                <RadioButton x:Name="RB_PropBalconyBig" IsEnabled="False" Content="Balkon: groß" VerticalAlignment="Top" Height="25" />
+                <RadioButton x:Name="RB_PropTerrace" IsEnabled="False" Content="Terrasse" VerticalAlignment="Top" Height="25" />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Zusatzleistungen" BorderBrush="DarkGray" Margin="10,453,0,0" Height="160" HorizontalAlignment="Left" VerticalAlignment="Top" Width="124">
+            <StackPanel x:Name="Stack_Additional">
+                <CheckBox x:Name="CB_AddBreakfast" Content="Frühstück" VerticalAlignment="Top" Height="30" />
+                <CheckBox x:Name="CB_AddFridge" Content="Kühlschrank" VerticalAlignment="Top" Height="30" />
+                <CheckBox x:Name="CB_AddTV" Content="Fernseher" VerticalAlignment="Top" Height="30" />
+                <CheckBox x:Name="CB_AddPayTV" Content="PayTV" VerticalAlignment="Top" Height="30" />
+                <CheckBox x:Name="CB_AddCot" Content="Kinderbett" VerticalAlignment="Top" Height="30" />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox HorizontalAlignment="Left" Height="130" Header="Zeitraum" BorderBrush="DarkGray" Margin="10,94,0,0" VerticalAlignment="Top" Width="124">
+            <StackPanel x:Name="Stack_Date">
+                <Label Content="Von:"/>
+                <DatePicker x:Name="DP_Start" Initialized="DP_Start_Initialized" SelectedDateChanged="DateChanged"/>
+                <Label Content="Bis:"/>
+                <DatePicker x:Name="DP_End" Initialized="DP_End_Initialized" SelectedDateChanged="DateChanged"/>
+            </StackPanel>
+        </GroupBox>
+
+        <Grid Margin="139,20,10,10">
+            <Grid Margin="10,0,10,615">
+                <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,15,0,0">
+
+                    <TextBox x:Name="Terrasse" Text="Terrasse"              MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
+                    <TextBox x:Name="PLZ" Text="PLZ"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
+                    <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
+                </StackPanel>
+
+            </Grid>
+            <Grid Margin="570,0,10,615">
+                <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,15,0,0">
+                    <TextBox x:Name="Vorname" Text="Vorname"                 MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
+                    <TextBox x:Name="Nachname" Text="Nachname"               MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
+                    <TextBox x:Name="Email" Text="Email"                     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
+                    <TextBox x:Name="Telefonnummer" Text="Telefonnummer"     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
+                </StackPanel>
+            </Grid>
+            <DataGrid Name="tabelle2" Margin="570,55,10,30" IsTextSearchEnabled="True" IsReadOnly="True"/>
+            <DataGrid Name="tabelle" Margin="10,55,570,30" IsTextSearchEnabled="True" IsReadOnly="True"/>
+        </Grid>
+    </Grid>
+</Page>

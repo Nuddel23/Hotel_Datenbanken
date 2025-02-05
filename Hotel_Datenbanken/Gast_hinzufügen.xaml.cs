@@ -27,6 +27,7 @@ namespace Hotel_Datenbanken
         DataTable AdressTabelle = new DataTable();
         DataView DataView_gast;
         DataView DataView_adresse;
+        int Gast_ID;
         public Gast_hinzufügen(MySqlConnection DB)
         {
             InitializeComponent();
@@ -176,7 +177,6 @@ namespace Hotel_Datenbanken
             }
 
             query = $"SELECT Gast_ID FROM Gast WHERE Vorname = \"{vorname}\" AND Nachname = \"{nachname}\" AND Email = \"{email}\" AND Telefonnummer = \"{telefonnummer}\"";
-            int Gast_ID;
             using (cmd = new(query, DB))
             {
                 cmd.ExecuteNonQuery();
