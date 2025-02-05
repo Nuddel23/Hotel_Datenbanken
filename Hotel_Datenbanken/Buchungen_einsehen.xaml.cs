@@ -108,9 +108,7 @@ namespace Hotel_Datenbanken
         }
 
         private void Buchung_Filtern(string filtertext, string name)
-        {
-            filtertext = (string) filtertext.ToString();
-            
+        {   
             if (DataView_buchung != null && filtertext != null)
             {
                 // Filter auf die DataView anwenden
@@ -137,13 +135,16 @@ namespace Hotel_Datenbanken
         private void DateChanged(object sender, SelectionChangedEventArgs e)
         {
             DP_End.DisplayDateStart = DP_Start.SelectedDate;
-            if (DP_End.SelectedDate == null || DP_End.SelectedDate < DP_Start.SelectedDate)
-            {
-                DP_End.SelectedDate = DP_Start.SelectedDate;
-            }
             DP_End.IsEnabled = true;
-            Buchung_Filtern(DP_Start.SelectedDate.Value.ToString("yyyy-MM-dd"), "Check_in");
-            Buchung_Filtern(DP_End.SelectedDate.Value.ToString("yyyy-MM-dd"), "Check_out");
+            
+            if (DP_End.SelectedDate != null)
+            {
+                Buchung_Filtern(DP_End.SelectedDate.Value.ToString("dd/MM/yyyy"), "Check_out");
+            }
+            if (DP_End.SelectedDate != null)
+            {
+                Buchung_Filtern(DP_Start.SelectedDate.Value.ToString("dd/MM/yyyy"), "Check_in");
+            }
         }
 
         private void DP_End_Initialized(object sender, EventArgs e)
@@ -151,6 +152,62 @@ namespace Hotel_Datenbanken
             DP_End.IsEnabled = false;
         }
 
+        private void CB_Balcony_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            foreach (RadioButton rb in Stack_Properties.Children.OfType<RadioButton>())
+            {
+                rb.IsChecked = false;
+                rb.IsEnabled = (bool)CB_Balcony.IsChecked!;
+            }
+            if (CB_Balcony.IsChecked == false)
+            {
+                Buchung_Filtern("", "Zimmertyp");
+            }
+        }
 
+        private void ZimmerType_Change(object sender, RoutedEventArgs e)
+        {
+            RadioButton rbType = Stack_Type.Children.OfType<RadioButton>().Where(rb => rb.IsChecked == true).First();
+            switch (rbType.Content.ToString())
+            {
+                case "Standart":
+                    Buchung_Filtern("Einzelzimmer", "Zimmertyp");
+                    break;
+
+                case "Doppel":
+                    Buchung_Filtern("Doppelzimmer", "Zimmertyp");
+                    break;
+
+                case "Suite":
+                    Buchung_Filtern("Suite", "Zimmertyp");
+                    break;
+
+                default:
+                    Buchung_Filtern("", "Zimmertyp");
+                    break;
+            }
+        }
+
+        private void ZimmerPropety_Changed(object sender, RoutedEventArgs e)
+        {
+            RadioButton rbBalcony = Stack_Properties.Children.OfType<RadioButton>().Where(rb => rb.IsChecked == true).First();
+            switch (rbBalcony.Content)
+            {
+                case "Balkon: klein":
+                    Buchung_Filtern("Kleiner Balkon", "Balkon");
+                    break;
+
+                case "Balkon: groß":
+                    Buchung_Filtern("Großer Balkon", "Balkon");
+                    break;
+
+                case "Terrasse":
+                    Buchung_Filtern("Ja", "Terrasse");
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
 }
