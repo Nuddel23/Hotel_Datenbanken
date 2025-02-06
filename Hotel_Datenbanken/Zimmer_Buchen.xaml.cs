@@ -1,7 +1,9 @@
 ﻿using MySqlConnector;
 using System.Data;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Hotel_Datenbanken
 {
@@ -10,11 +12,14 @@ namespace Hotel_Datenbanken
     /// </summary>
     public partial class Zimmer_Buchen : Page
     {
-        MySqlConnection DB;
-        Frame frame;
-        BuchungsStructure.NewBuchung buchung = new BuchungsStructure.NewBuchung();
-        Dictionary<string, int> additionals = new Dictionary<string, int>();
-        string roomType;
+        readonly MySqlConnection DB;
+        readonly Frame frame;
+        readonly Structure.NewBuchung buchung = new();
+        readonly Dictionary<string, int> additionals = [];
+        DataTable selectedRoomsTable = new();
+        DataView roomView;
+        List<int> selectedRoomIds = new List<int> { };
+        string? roomType, roomExtra;
 
         public Zimmer_Buchen(MySqlConnection DB, Frame frame)
         {
@@ -22,24 +27,45 @@ namespace Hotel_Datenbanken
             this.frame = frame;
             InitializeComponent();
             RB_TypeDefault.IsChecked = true;
-            Debug.Print(Calculate.RechnungPrice(3, DB).ToString());
+            string sqlPrompt = "" +
+                "SELECT Z.Zimmer_ID, Zimmertyp, Terrasse, Etage, Balkon, Aussicht_Strasse " +
+                "FROM zimmer Z " +
+                "WHERE 1 = 0";
+            SearchRoom(sqlPrompt);
+            if(DG_Rooms.ItemsSource is DataView dv)
+            {
+                DG_SelectedRooms.Columns.Clear();
+                foreach (DataColumn columne in dv.Table!.Columns)
+                {
+                    selectedRoomsTable.Columns.Add(columne.ColumnName, columne.DataType);
+                }
+                DG_SelectedRooms.ItemsSource = selectedRoomsTable.DefaultView;
+            }
+            CreatePrompt();
         }
 
         public void SearchRoom(string prompt)
         {
-            DataTable availabelRooms = new DataTable();
+            DataTable availabelRooms = new();
 
             using (var command = new MySqlCommand(prompt, DB))
             {
-                using (var adapter = new MySqlDataAdapter(command))
-                {
-                    if (availabelRooms != null)
-                        adapter.Fill(availabelRooms);
-                }
-                
+                using var adapter = new MySqlDataAdapter(command);
+                if (availabelRooms != null)
+                    adapter.Fill(availabelRooms);
+
             }
-            Tabel_Rooms.ItemsSource = availabelRooms!.DefaultView;
-           
+            roomView = new DataView(availabelRooms);
+
+            if(selectedRoomIds.Count != 0)
+            {
+                string filter = string.Join(",", selectedRoomIds);
+
+                roomView.RowFilter = $"[Zimmer_ID] NOT IN ({filter})";
+            }
+
+
+            DG_Rooms.ItemsSource = roomView;
         }
 
         private void Stack_Additional_Initialized(object sender, EventArgs e)
@@ -52,7 +78,7 @@ namespace Hotel_Datenbanken
             MySqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                CheckBox CBAdditional = new CheckBox();
+                CheckBox CBAdditional = new();
                 CBAdditional.Checked += CB_Additional_Checked;
                 CBAdditional.Name = "CB_" + reader.GetInt32(0);
                 CBAdditional.Content = reader.GetString(1); 
@@ -72,13 +98,12 @@ namespace Hotel_Datenbanken
                 .Where(cb => cb.IsChecked == true)
                 .ToArray();
 
-            List<int> selectdedAdditional = new List<int>();
+            List<int> selectdedAdditional = [];
 
             foreach (CheckBox cb in selectedCBAdditionals)
             {
                 if(additionals.TryGetValue(cb.Content.ToString()!, out int id))
                 {
-
                     selectdedAdditional.Add(id);
                 }
             }
@@ -94,18 +119,19 @@ namespace Hotel_Datenbanken
         private void CreatePrompt()
         {
             string sqlPrompt = "" +
-                "SELECT Z.Zimmer_ID, Zimmertyp, Terrasse, Etage, Balkon, Aussicht_Strasse " +
+                "SELECT Z.Zimmer_ID, Zimmertyp AS \"Typ\", Terrasse, Etage, Balkon, Aussicht_Strasse AS \"Straße\" " +
                 "FROM zimmer Z " +
                 "LEFT JOIN buchung B " +
                 "ON B.Zimmer_ID = Z.Zimmer_ID " +
                 "WHERE 1=1";
+            
 
 
             RadioButton rbType = Stack_Type.Children.OfType<RadioButton>().Where(rb => rb.IsChecked == true).First();
             roomType = rbType.Content.ToString()!;
             switch (roomType)
             {
-                case "Standart":
+                case "Einzel":
                     sqlPrompt += " AND Zimmertyp = \"Einzelzimmer\"";
                     break;
 
@@ -129,7 +155,8 @@ namespace Hotel_Datenbanken
             if (CB_Balcony.IsChecked == true)
             {
                 RadioButton rbBalcony = Stack_Properties.Children.OfType<RadioButton>().Where(rb => rb.IsChecked == true).First();
-                switch (rbBalcony.Content)
+                roomExtra = rbBalcony.Content.ToString()!;
+                switch (roomExtra)
                 {
                     case "Balkon: klein":
                         sqlPrompt += " AND Balkon = \"Kleiner Balkon\"";
@@ -206,12 +233,51 @@ namespace Hotel_Datenbanken
         private void BtnGuest_Click(object sender, System.Windows.RoutedEventArgs e)
         {
 
-
+            //Warte auf die funktion von John
 
         }
 
         private void BtnConfirm_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            //--Test--
+            buchung.GuestId = 6;
+            //--------
+            string query = "SELECT g.Vorname, g.Nachname, g.Email, g.Telefonnummer, a.Straße, a.Hausnummer, a.PLZ, p.Ort " +
+                "FROM gast g " +
+                "INNER JOIN adresse a ON g.Adress_ID = a.Adress_ID " +
+                "INNER JOIN PLZ p ON a.PLZ = p.PLZ " +
+                $"WHERE g.Gast_ID = {buchung.GuestId}";
+            MySqlCommand cmd = new(query, DB);
+            MySqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                Lbl_Name.Content = reader.GetString(0);
+                Lbl_Lastname.Content = reader.GetString(1);
+                Lbl_Email.Content = reader.GetString(2);
+                Lbl_Tel.Content = reader.GetString(3);
+                Lbl_Address.Content = $"{reader.GetString(4)} {reader.GetString(5)}";
+                Lbl_PLZ.Content = $"{reader.GetString(6)} {reader.GetString(7)}";
+            }
+            reader.Close();
+
+            Lbl_RoomNr.Content = buchung.RoomNrs;
+            Lbl_RoomTyp.Content = roomType;
+
+            Lbl_RoomLocation.Content = (bool)CB_Location.IsChecked! ? "Nicht Straße" : "Zur Straße";
+            Lbl_RoomExtra.Content = roomExtra;
+            Lbl_Start.Content = buchung.CheckIn;
+            Lbl_End.Content = buchung.CheckOut;
+
+            string additions = "";
+            if(buchung.Additionals != null)
+            {
+                foreach(int id in buchung.Additionals)
+                {
+                    additions += $"{additionals.FirstOrDefault(x => x.Value == id).Key}, ";
+                }
+            }
+            additions = additions.Remove(additions.Length-2);
+            TB_Extra.Text = additions;
 
             ConfirmationScreen.Visibility = System.Windows.Visibility.Visible;
 
@@ -219,15 +285,17 @@ namespace Hotel_Datenbanken
 
         private void ValidateSelection()
         {
-            bool DateIsChecked = DP_Start.SelectedDate != null && DP_End.SelectedDate != null;
-            bool RoomIsChecked = Tabel_Rooms.SelectedIndex != -1;
+            bool dateIsChecked = DP_Start.SelectedDate != null && DP_End.SelectedDate != null;
+            bool roomIsChecked = selectedRoomIds.Count != 0;
+            bool payMethodIsChecked = (CB_PayMethode.SelectedItem as ComboBoxItem)?.Content.ToString()! != "Zahlungsart...";
 
-            if (DateIsChecked && RoomIsChecked)
+            if (dateIsChecked && roomIsChecked && payMethodIsChecked)
             {
                 buchung.CheckIn = DateOnly.FromDateTime(DP_Start.SelectedDate!.Value);
                 buchung.CheckOut = DateOnly.FromDateTime(DP_End.SelectedDate!.Value);
-                buchung.RoomNr = (int)((DataRowView)Tabel_Rooms.SelectedItem)[0];
-                Btn_Confirm.IsEnabled = true;
+                buchung.RoomNrs = selectedRoomIds;
+                buchung.PayMethode = (CB_PayMethode.SelectedItem as ComboBoxItem)?.Content.ToString()!;
+                Btn_Confirm.IsEnabled = true;   
             }
             else
             {
@@ -237,9 +305,46 @@ namespace Hotel_Datenbanken
 
         private void Btn_SecConfirm_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            MySqlTransaction transaction = DB.BeginTransaction();
 
-            Debug.Print(Calculate.BuchungPrice(buchung, DB).ToString());
+            try
+            {
+                using MySqlCommand cmd = new();
+                cmd.Connection = DB;
+                cmd.Transaction = transaction;
 
+                cmd.CommandText = "INSERT INTO rechnung " +
+                            $"VALUES (NULL,'-','{buchung.PayMethode}',{buchung.GuestId})";
+                cmd.ExecuteNonQuery();
+
+                int rechnungsId = (int)cmd.LastInsertedId;
+
+                foreach (int roomId in buchung.RoomNrs)
+                {
+                    cmd.CommandText = "INSERT INTO buchung " +
+                                $"VALUES (NULL,'{buchung.CheckIn.ToString("yyyy-MM-dd")}','{buchung.CheckOut.ToString("yyyy-MM-dd")}',{roomId},{rechnungsId})";
+                    Debug.Print(cmd.CommandText);
+                    cmd.ExecuteNonQuery();
+                    int bookingId = (int)cmd.LastInsertedId;
+
+                    foreach(int additionalId in buchung.Additionals)
+                    {
+                        cmd.CommandText = "INSERT INTO beinhaltet " +
+                                        $"VALUES ({bookingId},{additionalId},'{buchung.CheckIn.ToString("yyyy-MM-dd")}','{buchung.CheckOut.ToString("yyyy-MM-dd")}')";
+                        cmd.ExecuteNonQuery();
+                    }
+
+                }
+
+                transaction.Commit();
+                MessageBox.Show("Haf gefunzt");
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         private void Btn_Return_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -249,18 +354,49 @@ namespace Hotel_Datenbanken
 
         }
 
-        private void Tabel_Rooms_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        private void Btn_AddRoom_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            
-            ValidateSelection();
+            if (DG_Rooms.SelectedItem is DataRowView selectedRow)
+            {
+                DataRow dataRow = selectedRoomsTable.NewRow();
+                dataRow.ItemArray = (object[])selectedRow.Row.ItemArray.Clone();
+
+                selectedRoomsTable.Rows.Add(dataRow);
+                DG_SelectedRooms.ItemsSource = selectedRoomsTable.DefaultView;
+
+                selectedRoomIds.Add((int)selectedRow.Row[0]!);
+
+                CreatePrompt();
+            }
+
         }
 
-        private void GetFullPrice()
+        private void Btn_RemoveRoom_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            int anzDays = buchung.CheckOut.DayNumber - buchung.CheckIn.DayNumber;
 
-            string query = $"SELECT Preis From preis WHERE Kategorie = {roomType}";
+            if(DG_SelectedRooms.SelectedItem is DataRowView selectedRow)
+            {
+                selectedRoomIds.Remove((int)selectedRow.Row[0]!);
+                selectedRow.Row.Delete();
+                selectedRoomsTable.AcceptChanges();
 
+                CreatePrompt();
+            }
+
+        }
+
+        private void CB_PayMethode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Btn_Confirm != null)
+            {
+                ValidateSelection();
+
+            }
+        }
+
+        private void Tabel_Rooms_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            ValidateSelection();
         }
     }
 }

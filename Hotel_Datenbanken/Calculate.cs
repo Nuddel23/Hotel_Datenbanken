@@ -32,7 +32,7 @@ namespace Hotel_Datenbanken
             }
             return completePrice;
         }
-        public static int BuchungPrice(BuchungsStructure.NewBuchung buchung, MySqlConnection DB)
+        public static int BuchungPrice(Structure.NewBuchung buchung, MySqlConnection DB)
         {
             int price;
 
@@ -40,7 +40,7 @@ namespace Hotel_Datenbanken
             string query = "SELECT p.Preis " +
                     "FROM zimmer z " +
                     "INNER JOIN preis p On z.Zimmertyp = p.Kategorie " +
-                    $"WHERE z.Zimmer_ID = {buchung.RoomNr}";
+                    $"WHERE z.Zimmer_ID = {buchung.RoomNrs}";
 
             MySqlCommand cmd = new(query, DB);
             MySqlDataReader reader = cmd.ExecuteReader();
