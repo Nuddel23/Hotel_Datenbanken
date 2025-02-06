@@ -17,38 +17,21 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox HorizontalAlignment="Left" Height="79" Header="Art" BorderBrush="DarkGray" Margin="10,374,0,0" VerticalAlignment="Top" Width="124">
+        <GroupBox HorizontalAlignment="Left" Height="100" Header="Art" BorderBrush="DarkGray" Margin="10,374,0,0" VerticalAlignment="Top" Width="124">
             <StackPanel x:Name="Stack_Type">
-                <RadioButton x:Name="RB_TypeDefault" Content="Standart" VerticalAlignment="Top" Height="20" />
-                <RadioButton x:Name="RB_TypeDouble" Content="Doppel" VerticalAlignment="Center" Height="20"/>
-                <RadioButton x:Name="RB_TypeSuite" Content="Suite" VerticalAlignment="Bottom" Height="20" />
+                <RadioButton x:Name="RB_TypeDefault" Content="Alle" VerticalAlignment="Top" IsChecked="True" Height="20" Click="ZimmerType_Change"/>
+                <RadioButton x:Name="RB_TypeSingle" Content="Standart" VerticalAlignment="Top" Height="20"  Click="ZimmerType_Change"/>
+                <RadioButton x:Name="RB_TypeDouble" Content="Doppel" VerticalAlignment="Center" Height="20" Click="ZimmerType_Change"/>
+                <RadioButton x:Name="RB_TypeSuite" Content="Suite" VerticalAlignment="Bottom" Height="20"  Click="ZimmerType_Change"/>
             </StackPanel>
         </GroupBox>
         <GroupBox  HorizontalAlignment="Left" Height="150" Header="Zimmer" BorderBrush="DarkGray" Margin="10,224,0,0" VerticalAlignment="Top" Width="124">
             <StackPanel x:Name="Stack_Properties">
-                <CheckBox x:Name="CB_Location" Content="Nicht Straße" VerticalAlignment="Top" Height="30" RenderTransformOrigin="0.5,0.5">
-                    <CheckBox.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform AngleX="-1.79"/>
-                            <RotateTransform/>
-                            <TranslateTransform X="0.469"/>
-                        </TransformGroup>
-                    </CheckBox.RenderTransform>
-                </CheckBox>
-                <CheckBox x:Name="CB_Balcony" Content="Balkon" VerticalAlignment="Top" Height="30" />
-                <RadioButton x:Name="RB_PropBalconyLittle" IsEnabled="False" Content="Balkon: klein" VerticalAlignment="Top" Height="25"  />
-                <RadioButton x:Name="RB_PropBalconyBig" IsEnabled="False" Content="Balkon: groß" VerticalAlignment="Top" Height="25" />
-                <RadioButton x:Name="RB_PropTerrace" IsEnabled="False" Content="Terrasse" VerticalAlignment="Top" Height="25" />
-            </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Zusatzleistungen" BorderBrush="DarkGray" Margin="10,453,0,0" Height="160" HorizontalAlignment="Left" VerticalAlignment="Top" Width="124">
-            <StackPanel x:Name="Stack_Additional">
-                <CheckBox x:Name="CB_AddBreakfast" Content="Frühstück" VerticalAlignment="Top" Height="30" />
-                <CheckBox x:Name="CB_AddFridge" Content="Kühlschrank" VerticalAlignment="Top" Height="30" />
-                <CheckBox x:Name="CB_AddTV" Content="Fernseher" VerticalAlignment="Top" Height="30" />
-                <CheckBox x:Name="CB_AddPayTV" Content="PayTV" VerticalAlignment="Top" Height="30" />
-                <CheckBox x:Name="CB_AddCot" Content="Kinderbett" VerticalAlignment="Top" Height="30" />
+                <CheckBox x:Name="CB_Location" Content="Nicht Straße" VerticalAlignment="Top" Height="30"/>
+                <CheckBox x:Name="CB_Balcony" Content="Balkon" VerticalAlignment="Top" Height="30" Click="CB_Balcony_Checked"/>
+                <RadioButton x:Name="RB_PropBalconyLittle" IsEnabled="False" Content="Balkon: klein" VerticalAlignment="Top" Height="25" Click="ZimmerPropety_Changed"  />
+                <RadioButton x:Name="RB_PropBalconyBig" IsEnabled="False" Content="Balkon: groß" VerticalAlignment="Top" Height="25" Click="ZimmerPropety_Changed"/>
+                <RadioButton x:Name="RB_PropTerrace" IsEnabled="False" Content="Terrasse" VerticalAlignment="Top" Height="25" Click="ZimmerPropety_Changed"/>
             </StackPanel>
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="130" Header="Zeitraum" BorderBrush="DarkGray" Margin="10,94,0,0" VerticalAlignment="Top" Width="124">
