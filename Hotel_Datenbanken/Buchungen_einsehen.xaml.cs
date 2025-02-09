@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace Hotel_Datenbanken
 {
@@ -28,6 +29,9 @@ namespace Hotel_Datenbanken
         DataTable BuchungTabelle = new DataTable();
         DataView DataView_gast;
         DataView DataView_buchung;
+
+        string[] Buchungfiltertypen = { "Zimmertyp", "Check_out", "Check_in", "Balkon", "Terrasse", "Aussicht_Strasse" };
+        string[] Buchungfilter = new string[6];
         public Buchungen_einsehen(MySqlConnection DB)
         {
             InitializeComponent();
@@ -98,32 +102,50 @@ namespace Hotel_Datenbanken
 
             }
         }
+        
 
         private void Filter_adresse_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is TextBox filtertextbox && DataView_buchung != null)
+            if (sender is TextBox filtertextbox && DataView_buchung != null && filtertextbox.Text != null)
             {
-                Buchung_Filtern(filtertextbox.Text, filtertextbox.Name);
+                for (int i = 0; i < Buchungfiltertypen.Length; i++)
+                {
+                    if (filtertextbox.Name == Buchungfiltertypen[i])
+                    {
+                        Buchungfilter[i] = filtertextbox.Text;
+                    }
+                }
+
+                Buchung_Filtern();
             }
         }
 
-        private void Buchung_Filtern(string filtertext, string name)
-        {   
-            if (DataView_buchung != null && filtertext != null)
+
+        private void Buchung_Filtern()
+        {
+            if (DataView_buchung != null)
             {
-                // Filter auf die DataView anwenden
-                if (string.IsNullOrWhiteSpace(filtertext) || filtertext == name)
+                List<string> filterConditions = new List<string>();
+                for (int i = 0; i < Buchungfiltertypen.Length; i++)
                 {
-                    // Wenn das Textfeld leer ist, wird der Filter entfernt
-                    DataView_buchung.RowFilter = string.Empty;
+
+                    if (string.IsNullOrWhiteSpace(Buchungfilter[i]) || Buchungfilter[i] == Buchungfiltertypen[i])
+                    {
+                        
+                    }
+                    else
+                    {
+                        filterConditions.Add($"Convert([{Buchungfiltertypen[i]}], System.String) LIKE '%{Buchungfilter[i]}%'");
+                    }
+                }
+                if (filterConditions.Count > 0)
+                {
+                    DataView_buchung.RowFilter = string.Join(" AND ", filterConditions);
                 }
                 else
                 {
-                    // Filter nach Name anwenden (oder anderen Spalten)
-                    DataView_buchung.RowFilter = $"Convert([{name}], System.String) LIKE '%{filtertext}%'";
-
+                    DataView_buchung.RowFilter = string.Empty;
                 }
-
             }
         }
 
@@ -139,12 +161,22 @@ namespace Hotel_Datenbanken
             
             if (DP_End.SelectedDate != null)
             {
-                Buchung_Filtern(DP_End.SelectedDate.Value.ToString("dd/MM/yyyy"), "Check_out");
+                Buchungfilter[1] = DP_End.SelectedDate.Value.ToString("dd/MM/yyyy");
             }
-            if (DP_End.SelectedDate != null)
+            else
             {
-                Buchung_Filtern(DP_Start.SelectedDate.Value.ToString("dd/MM/yyyy"), "Check_in");
+                Buchungfilter[1] = "";
             }
+
+            if (DP_Start.SelectedDate != null)
+            {
+                Buchungfilter[2] = DP_Start.SelectedDate.Value.ToString("dd/MM/yyyy");
+            }
+            else
+            {
+                Buchungfilter[2] = "";
+            }
+            Buchung_Filtern();
         }
 
         private void DP_End_Initialized(object sender, EventArgs e)
@@ -161,7 +193,10 @@ namespace Hotel_Datenbanken
             }
             if (CB_Balcony.IsChecked == false)
             {
-                Buchung_Filtern("", "Zimmertyp");
+                Buchungfilter[3] = "";
+                Buchungfilter[4] = "";
+                Buchung_Filtern();
+                
             }
         }
 
@@ -171,21 +206,31 @@ namespace Hotel_Datenbanken
             switch (rbType.Content.ToString())
             {
                 case "Standart":
-                    Buchung_Filtern("Einzelzimmer", "Zimmertyp");
+                    Buchungfilter[0] = "Einzelzimmer";
+                    
                     break;
 
                 case "Doppel":
-                    Buchung_Filtern("Doppelzimmer", "Zimmertyp");
+                    Buchungfilter[0] = "Doppelzimmer";
+                    
                     break;
 
                 case "Suite":
-                    Buchung_Filtern("Suite", "Zimmertyp");
+                    Buchungfilter[0] = "Suite";
+                    
+                    break;
+
+                case "Alle":
+                    Buchungfilter[0] = "";
+
                     break;
 
                 default:
-                    Buchung_Filtern("", "Zimmertyp");
+                    Buchungfilter[0] = "";
+                    
                     break;
             }
+            Buchung_Filtern();
         }
 
         private void ZimmerPropety_Changed(object sender, RoutedEventArgs e)
@@ -194,20 +239,38 @@ namespace Hotel_Datenbanken
             switch (rbBalcony.Content)
             {
                 case "Balkon: klein":
-                    Buchung_Filtern("Kleiner Balkon", "Balkon");
+                    Buchungfilter[3] = "Kleiner Balkon";
+                    Buchungfilter[4] = "";
                     break;
 
                 case "Balkon: groß":
-                    Buchung_Filtern("Großer Balkon", "Balkon");
+                    Buchungfilter[3] = "Großer Balkon";
+                    Buchungfilter[4] = "";
                     break;
 
                 case "Terrasse":
-                    Buchung_Filtern("Ja", "Terrasse");
+                    Buchungfilter[4] = "Ja";
+                    Buchungfilter[3] = "";
                     break;
-
                 default:
+                    Buchungfilter[3] = "";
+                    Buchungfilter[4] = "";
                     break;
             }
+            Buchung_Filtern();
+        }
+
+        private void CB_Location_Click(object sender, RoutedEventArgs e)
+        {
+            if (CB_Location.IsChecked == true)
+            {
+                Buchungfilter[5] = "Nein";   
+            }
+            else
+            {
+                Buchungfilter[5] = "";
+            }
+            Buchung_Filtern();
         }
     }
 }

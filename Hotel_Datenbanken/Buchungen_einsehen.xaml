@@ -27,7 +27,7 @@
         </GroupBox>
         <GroupBox  HorizontalAlignment="Left" Height="150" Header="Zimmer" BorderBrush="DarkGray" Margin="10,224,0,0" VerticalAlignment="Top" Width="124">
             <StackPanel x:Name="Stack_Properties">
-                <CheckBox x:Name="CB_Location" Content="Nicht Straße" VerticalAlignment="Top" Height="30"/>
+                <CheckBox x:Name="CB_Location" Content="Nicht Straße" VerticalAlignment="Top" Height="30" Click="CB_Location_Click"/>
                 <CheckBox x:Name="CB_Balcony" Content="Balkon" VerticalAlignment="Top" Height="30" Click="CB_Balcony_Checked"/>
                 <RadioButton x:Name="RB_PropBalconyLittle" IsEnabled="False" Content="Balkon: klein" VerticalAlignment="Top" Height="25" Click="ZimmerPropety_Changed"  />
                 <RadioButton x:Name="RB_PropBalconyBig" IsEnabled="False" Content="Balkon: groß" VerticalAlignment="Top" Height="25" Click="ZimmerPropety_Changed"/>
