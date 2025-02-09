@@ -32,28 +32,45 @@ namespace Hotel_Datenbanken
             }
             return completePrice;
         }
+
         public static int BuchungPrice(Structure.NewBuchung buchung, MySqlConnection DB)
         {
-            int price;
-
+            MySqlCommand cmd;
+            MySqlDataReader reader;
+            int price = 0;
             int days = buchung.CheckOut.DayNumber - buchung.CheckIn.DayNumber;
-            string query = "SELECT p.Preis " +
+
+            foreach(int roomNr in buchung.RoomNrs)
+            {
+                string query = "SELECT p.Preis " +
+                        "FROM zimmer z " +
+                        "INNER JOIN preis p On z.Zimmertyp = p.Kategorie " +
+                        $"WHERE z.Zimmer_ID = {roomNr}";
+                cmd = new(query, DB);
+                reader = cmd.ExecuteReader();
+
+                price += reader.GetInt32(0) * days;
+                reader.Close();
+
+                query = "SELECT " +
+                    "IF(z.Terrasse = \"Ja\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Terrasse\"), 0) + " +
+                    "IF(z.Balkon = \"Großer Balkon\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Großer Balkon\"), 0) + " +
+                    "IF(z.Balkon = \"Kleiner Balkon\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Kleiner Balkon\"), 0) + " +
+                    "IF(z.Aussicht_Strasse = \"Nein\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Nicht Straße\"), 0) AS Preis " +
                     "FROM zimmer z " +
-                    "INNER JOIN preis p On z.Zimmertyp = p.Kategorie " +
-                    $"WHERE z.Zimmer_ID = {buchung.RoomNrs}";
+                    $"WHERE z.Zimmer_ID = {roomNr}";
 
-            MySqlCommand cmd = new(query, DB);
-            MySqlDataReader reader = cmd.ExecuteReader();
-            reader.Read();
-            price = reader.GetInt32(0) * days;
-            reader.Close();
-
+                cmd = new(query, DB);
+                reader = cmd.ExecuteReader();
+                reader.Read();
+                price += reader.GetInt32(0) * days;
+            }
 
             if(buchung.Additionals != null)
             {
                 foreach(int zusatzleistung in buchung.Additionals)
                 {
-                    query = "SELECT z.Preis " +
+                    string query = "SELECT z.Preis " +
                         "FROM zusatzleistung z " +
                         $"WHERE z.Zusatzleistungs_Id = {zusatzleistung}";
                     cmd = new(query, DB);
@@ -63,8 +80,6 @@ namespace Hotel_Datenbanken
                     reader.Close();
                 }
             }
-
-
 
             return price;
         }
@@ -84,6 +99,21 @@ namespace Hotel_Datenbanken
             reader.Read();
             int days = (reader.GetDateTime(2) - reader.GetDateTime(1)).Days;
             price = reader.GetInt32(0) * days;
+            reader.Close();
+
+            query = "SELECT " +
+                "IF(z.Terrasse = \"Ja\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Terrasse\"), 0) + " +
+                "IF(z.Balkon = \"Großer Balkon\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Großer Balkon\"), 0) + " +
+                "IF(z.Balkon = \"Kleiner Balkon\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Kleiner Balkon\"), 0) + " +
+                "IF(z.Aussicht_Strasse = \"Nein\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Nicht Straße\"), 0) AS Preis " +
+                "FROM buchung b " +
+                "INNER JOIN zimmer z ON b.Zimmer_ID = z.Zimmer_ID " +
+                $"WHERE b.Buchungs_ID = {buchungsId}";
+
+            cmd = new(query, DB);
+            reader = cmd.ExecuteReader();
+            reader.Read();
+            price += reader.GetInt32(0) * days;
             reader.Close();
 
             query = "SELECT z.Preis, be.Start_Datum, be.End_Datum " +

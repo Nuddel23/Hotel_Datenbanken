@@ -28,11 +28,11 @@ namespace Hotel_Datenbanken
             InitializeComponent();
             RB_TypeDefault.IsChecked = true;
             string sqlPrompt = "" +
-                "SELECT Z.Zimmer_ID, Zimmertyp, Terrasse, Etage, Balkon, Aussicht_Strasse " +
+                "SELECT Z.Zimmer_ID, Zimmertyp, Terrasse, Etage, Balkon, Aussicht_Strasse AS \"Straße\"" +
                 "FROM zimmer Z " +
                 "WHERE 1 = 0";
             SearchRoom(sqlPrompt);
-            if(DG_Rooms.ItemsSource is DataView dv)
+            if (DG_Rooms.ItemsSource is DataView dv)
             {
                 DG_SelectedRooms.Columns.Clear();
                 foreach (DataColumn columne in dv.Table!.Columns)
@@ -260,14 +260,11 @@ namespace Hotel_Datenbanken
             }
             reader.Close();
 
-            Lbl_RoomNr.Content = buchung.RoomNrs;
-            Lbl_RoomTyp.Content = roomType;
-
-            Lbl_RoomLocation.Content = (bool)CB_Location.IsChecked! ? "Nicht Straße" : "Zur Straße";
-            Lbl_RoomExtra.Content = roomExtra;
-            Lbl_Start.Content = buchung.CheckIn;
-            Lbl_End.Content = buchung.CheckOut;
-
+            TB_RoomNrs.Text = string.Join(", ", buchung.RoomNrs);
+            Lbl_Start.Content = buchung.CheckIn.ToString("dd.MM.yyyy");
+            Lbl_End.Content = buchung.CheckOut.ToString("dd.MM.yyyy");
+            TB_PayMethode.Text = buchung.PayMethode;
+            
             string additions = "";
             if(buchung.Additionals != null)
             {
@@ -323,7 +320,6 @@ namespace Hotel_Datenbanken
                 {
                     cmd.CommandText = "INSERT INTO buchung " +
                                 $"VALUES (NULL,'{buchung.CheckIn.ToString("yyyy-MM-dd")}','{buchung.CheckOut.ToString("yyyy-MM-dd")}',{roomId},{rechnungsId})";
-                    Debug.Print(cmd.CommandText);
                     cmd.ExecuteNonQuery();
                     int bookingId = (int)cmd.LastInsertedId;
 

@@ -5,10 +5,52 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Hotel_Datenbanken"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="680" d:DesignWidth="1280" 
       Title="Homepage">
 
-    <Grid>
-        <TextBox Text="Homepage"/>
+    <Page.Resources>
+        <Style TargetType="DataGrid">
+            <Setter Property="RowBackground" Value="#F2F2F2"/>
+            <Setter Property="AlternatingRowBackground" Value="#E6E6E6"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowHeight" Value="30"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#0078D7"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Padding" Value="5"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    
+    <Grid Margin="10">
+        
+        
+        <Rectangle Fill="White"/>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel>
+                <TextBlock FontSize="50">
+                    <TextBlock.Text>
+                        Hotel Willeke
+                    </TextBlock.Text>
+                </TextBlock>
+                <Image HorizontalAlignment="Left" Source="/assats/Media.png" Width="600" Height="340" />
+                <Label Width="550" Content="Freie Zimmer" FontSize="15" Margin="0,30,0,0"/>
+                <DataGrid Height="150" Width="550" />
+            </StackPanel>
+            <StackPanel Margin="200,50,0,0">
+                <Label Content="Heutige Agenda" FontSize="20" FontWeight="Bold"/>
+                <Label  Content="Anreisen" FontSize="15"/>
+                <DataGrid x:Name="DG_CheckIns" Height="220" Width="350" />
+                <Label Content="Abreisen" FontSize="15" Margin="0,5,0,0"/>
+                <DataGrid x:Name="DG_CheckOuts" Height="220" Width="350"/>
+            </StackPanel>
+        </StackPanel>
+
     </Grid>
 </Page>
