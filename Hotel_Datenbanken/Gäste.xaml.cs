@@ -58,14 +58,22 @@ namespace Hotel_Datenbanken
         }
 
         Window Gast_hinzufügen_Window;
+        public int Wert;
         private void Gast_hinzufügen_Click(object sender, RoutedEventArgs e)
         {
-            gast_hinzufügen = new Gast_hinzufügen(DB);
+            gast_hinzufügen = new Gast_hinzufügen(DB, Wert);
             Gast_hinzufügen_Window = new Window();
             Gast_hinzufügen_Window.Content = gast_hinzufügen;
             Gast_hinzufügen_Window.Width = 800;
             Gast_hinzufügen_Window.Height = 500;
+            gast_hinzufügen.WertGeändert += gast_hinzufügen_WertGeändert;
             Gast_hinzufügen_Window.Show();
+        }
+
+        private void gast_hinzufügen_WertGeändert(object sender, int neuerWert)
+        {
+            Wert = neuerWert;
+            MessageBox.Show($"Der Wert wurde geändert: {Wert}");
         }
 
         private void Name_LostFocus(object sender, RoutedEventArgs e)

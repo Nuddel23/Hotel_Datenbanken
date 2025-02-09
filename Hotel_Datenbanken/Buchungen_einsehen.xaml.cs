@@ -25,42 +25,52 @@ namespace Hotel_Datenbanken
     public partial class Buchungen_einsehen : Page
     {
         MySqlConnection DB;
-        DataTable GastTabelle = new DataTable();
-        DataTable BuchungTabelle = new DataTable();
+        DataTable GastTabelle_table = new DataTable();
+        DataTable BuchungTabelle_table = new DataTable();
         DataView DataView_gast;
         DataView DataView_buchung;
 
-        string[] Buchungfiltertypen = { "Zimmertyp", "Check_out", "Check_in", "Balkon", "Terrasse", "Aussicht_Strasse" };
-        string[] Buchungfilter = new string[6];
+        string[] Buchungfiltertypen = { "Zimmertyp", "Check_out", "Check_in", "Balkon", "Terrasse", "Aussicht_Strasse", "Zimmernummer" };
+        string[] Buchungfilter = new string[7];
         public Buchungen_einsehen(MySqlConnection DB)
         {
             InitializeComponent();
             this.DB = DB;
-            tabellenfüllen();
-
-            DataView_gast = new DataView(GastTabelle);
-            DataView_buchung = new DataView(BuchungTabelle);
-
-            tabelle2.ItemsSource = DataView_gast;
-            tabelle.ItemsSource = DataView_buchung;
+            tabellenfüllen(null, null);
         }
 
-        void tabellenfüllen()
+        void tabellenfüllen(int? buchung_ID, int? gast_ID)
         {
-            using (var command = new MySqlCommand($"SELECT * FROM gast;", DB))
+            MySqlCommand gast_command = new MySqlCommand($"SELECT * FROM gast;", DB);
+            MySqlCommand buchung_command = new MySqlCommand($"SELECT `buchung`.*, `zimmer`.*\r\nFROM `buchung` \r\n\tLEFT JOIN `zimmer` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID`;", DB);
+
+            if (gast_ID != null)
             {
-                using (var adapter = new MySqlDataAdapter(command))
-                {
-                    adapter.Fill(GastTabelle);
-                }
+                buchung_command = new MySqlCommand($"SELECT `buchung`.*, `buchung_hat_gast`.`Gast_ID`, `zimmer`.*\r\nFROM `buchung` \r\n\tLEFT JOIN `buchung_hat_gast` ON `buchung_hat_gast`.`Buchungs_ID` = `buchung`.`Buchungs_ID` \r\n\tLEFT JOIN `zimmer` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID`\r\nWHERE `buchung_hat_gast`.`Gast_ID` = '{gast_ID}';", DB);
             }
-            using (var command = new MySqlCommand($"SELECT `buchung`.*, `zimmer`.*\r\nFROM `buchung` \r\n\tLEFT JOIN `zimmer` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID`;", DB))
+            if (buchung_ID != null)
             {
-                using (var adapter = new MySqlDataAdapter(command))
-                {
-                    adapter.Fill(BuchungTabelle);
-                }
+                gast_command = new MySqlCommand($"SELECT `gast`.*, `buchung_hat_gast`.`Buchungs_ID`\r\nFROM `gast` \r\n\tLEFT JOIN `buchung_hat_gast` ON `buchung_hat_gast`.`Gast_ID` = `gast`.`Gast_ID`\r\nWHERE `buchung_hat_gast`.`Buchungs_ID` = '{buchung_ID}';", DB);
             }
+
+
+            using (var adapter = new MySqlDataAdapter(gast_command))
+            {
+                GastTabelle_table = new DataTable();
+                adapter.Fill(GastTabelle_table);
+                DataView_gast = new DataView(GastTabelle_table);
+                GastTabelle.ItemsSource = DataView_gast;
+            }
+
+
+            using (var adapter = new MySqlDataAdapter(buchung_command))
+            {
+                BuchungTabelle_table = new DataTable();
+                adapter.Fill(BuchungTabelle_table);
+                DataView_buchung = new DataView(BuchungTabelle_table);
+                BuchungTabelle.ItemsSource = DataView_buchung;
+            }
+
         }
 
         private void Filter_LostFocus(object sender, RoutedEventArgs e)
@@ -81,30 +91,26 @@ namespace Hotel_Datenbanken
             }
         }
 
-        private void Filter_gast_TextChanged(object sender, TextChangedEventArgs e)
+        private void Filter_Gast_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (sender is TextBox filtertextbox && DataView_gast != null)
             {
                 string filtertext = filtertextbox.Text;
 
-                // Filter auf die DataView anwenden
                 if (string.IsNullOrWhiteSpace(filtertext) || filtertext == filtertextbox.Name)
                 {
-                    // Wenn das Textfeld leer ist, wird der Filter entfernt
                     DataView_gast.RowFilter = string.Empty;
                 }
                 else
                 {
-                    // Filter nach Name anwenden (oder anderen Spalten)
                     DataView_gast.RowFilter = $"{filtertextbox.Name} LIKE '%{filtertext}%'";
-
                 }
 
             }
         }
-        
 
-        private void Filter_adresse_TextChanged(object sender, TextChangedEventArgs e)
+
+        private void Filter_Buchung_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (sender is TextBox filtertextbox && DataView_buchung != null && filtertextbox.Text != null)
             {
@@ -129,11 +135,7 @@ namespace Hotel_Datenbanken
                 for (int i = 0; i < Buchungfiltertypen.Length; i++)
                 {
 
-                    if (string.IsNullOrWhiteSpace(Buchungfilter[i]) || Buchungfilter[i] == Buchungfiltertypen[i])
-                    {
-                        
-                    }
-                    else
+                    if ((string.IsNullOrWhiteSpace(Buchungfilter[i]) || Buchungfilter[i] == Buchungfiltertypen[i]) == false)
                     {
                         filterConditions.Add($"Convert([{Buchungfiltertypen[i]}], System.String) LIKE '%{Buchungfilter[i]}%'");
                     }
@@ -151,14 +153,14 @@ namespace Hotel_Datenbanken
 
         private void DP_Start_Initialized(object sender, EventArgs e)
         {
-            
+
         }
 
         private void DateChanged(object sender, SelectionChangedEventArgs e)
         {
             DP_End.DisplayDateStart = DP_Start.SelectedDate;
             DP_End.IsEnabled = true;
-            
+
             if (DP_End.SelectedDate != null)
             {
                 Buchungfilter[1] = DP_End.SelectedDate.Value.ToString("dd/MM/yyyy");
@@ -196,7 +198,7 @@ namespace Hotel_Datenbanken
                 Buchungfilter[3] = "";
                 Buchungfilter[4] = "";
                 Buchung_Filtern();
-                
+
             }
         }
 
@@ -207,17 +209,17 @@ namespace Hotel_Datenbanken
             {
                 case "Standart":
                     Buchungfilter[0] = "Einzelzimmer";
-                    
+
                     break;
 
                 case "Doppel":
                     Buchungfilter[0] = "Doppelzimmer";
-                    
+
                     break;
 
                 case "Suite":
                     Buchungfilter[0] = "Suite";
-                    
+
                     break;
 
                 case "Alle":
@@ -227,7 +229,7 @@ namespace Hotel_Datenbanken
 
                 default:
                     Buchungfilter[0] = "";
-                    
+
                     break;
             }
             Buchung_Filtern();
@@ -264,13 +266,41 @@ namespace Hotel_Datenbanken
         {
             if (CB_Location.IsChecked == true)
             {
-                Buchungfilter[5] = "Nein";   
+                Buchungfilter[5] = "Nein";
             }
             else
             {
                 Buchungfilter[5] = "";
             }
             Buchung_Filtern();
+        }
+        private void BuchungTabelle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (BuchungTabelle.SelectedItem is DataRowView selectedRow)
+            {
+                tabellenfüllen((int)selectedRow.Row[0], null);
+                if (BuchungTabelle.IsFocused == false)
+                {
+                    BuchungTabelle.Focus();
+                }
+            }
+        }
+
+        private void GastTabelle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (GastTabelle.SelectedItem is DataRowView selectedRow)
+            {
+                tabellenfüllen(null, (int)selectedRow.Row[0]);
+                if (GastTabelle.IsFocused == false)
+                {
+                    GastTabelle.Focus();
+                }
+            }
+        }
+
+        private void Tabelle_LostFocus(object sender, RoutedEventArgs e)
+        {
+            tabellenfüllen(null, null);
         }
     }
 }

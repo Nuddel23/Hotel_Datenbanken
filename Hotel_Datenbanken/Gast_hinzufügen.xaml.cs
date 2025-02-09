@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,10 +29,11 @@ namespace Hotel_Datenbanken
         DataView DataView_gast;
         DataView DataView_adresse;
         int Gast_ID;
-        public Gast_hinzufügen(MySqlConnection DB)
+        public Gast_hinzufügen(MySqlConnection DB, int Gast_ID)
         {
             InitializeComponent();
             this.DB = DB;
+            this.Gast_ID = Gast_ID;
             tabellenfüllen();
 
             DataView_gast = new DataView(GastTabelle);
@@ -43,7 +45,7 @@ namespace Hotel_Datenbanken
 
         public int returngast()
         {
-            return 2;
+            return Gast_ID;
         }
 
         void tabellenfüllen()
@@ -125,7 +127,7 @@ namespace Hotel_Datenbanken
             }
         }
 
-        private void Bestätigen_Click(object sender, RoutedEventArgs e)
+        private void Hinzufügen_Click(object sender, RoutedEventArgs e)
         {
             //Telefonnummer.Text = tabelle.SelectedIndex.ToString();
             string vorname = Vorname.Text, nachname = Nachname.Text, email = Email.Text, telefonnummer = Telefonnummer.Text;
@@ -185,8 +187,7 @@ namespace Hotel_Datenbanken
                 if (!reader.HasRows)
                 {
                     reader.Close();
-                    // Insert new Address
-                    query = $"INSERT INTO gast (Vorname, Nachname, Email, Telefonnummer) VALUES (\"{vorname}\", \"{nachname}\", \"{email}\", \"{telefonnummer}\")";
+                    query = $"INSERT INTO gast (Vorname, Nachname, Email, Telefonnummer, Adress_ID) VALUES (\"{vorname}\", \"{nachname}\", \"{email}\", \"{telefonnummer}\", \"{Adr_ID}\")";
                     using MySqlCommand insertCmd = new(query, DB);
                     insertCmd.ExecuteNonQuery();
 
@@ -206,12 +207,6 @@ namespace Hotel_Datenbanken
                 }
             }
 
-            query = $"INSERT INTO gast_hat_adresse (Gast_ID, Adress_ID) VALUES (\"{Gast_ID}\",\"{Adr_ID}\")";
-            using (cmd = new(query, DB))
-            {
-                cmd.ExecuteNonQuery();
-            }
-
             MessageBox.Show("Gast wurde erfolgreich hinzugefügt");
             Nachname.Text = Nachname.Name;
             Vorname.Text = Vorname.Name;
@@ -221,11 +216,49 @@ namespace Hotel_Datenbanken
             Hausnummer.Text = Hausnummer.Name;
             PLZ.Text = PLZ.Name;
             Ort.Text = Ort.Name;
+
+            tabellenfüllen();
+            WertGeändert?.Invoke(this, Gast_ID);
+            Window.GetWindow(this)?.Close();
         }
 
+        // Ereignis, das den geänderten Wert zurückgibt
+        public event EventHandler<int> WertGeändert;
         private void Abbrechen_Click(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this)?.Close();
+        }
+
+        private void Bestätigen_Click(object sender, RoutedEventArgs e)
+        {
+            if (tabelle2.SelectedItem is DataRowView selectedRow)
+            {
+                WertGeändert?.Invoke(this, (int)selectedRow.Row[0]);
+                Window.GetWindow(this)?.Close();
+            }
+            else
+            {
+                MessageBox.Show("Es wurde kein Gast ausgewählt");
+            }
+        }
+
+        private void Adresse_reset_Click(object sender, RoutedEventArgs e)
+        {
+            Straße.Text = "";
+            Hausnummer.Text = "";
+            PLZ.Text = "";
+            Ort.Text = "";
+        }
+
+        private void tabelle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (tabelle.SelectedItem is DataRowView selectedRow)
+            {
+                Straße.Text = (string)selectedRow.Row[0];
+                Hausnummer.Text = (string)selectedRow.Row[1];
+                PLZ.Text = (string)selectedRow.Row[2];
+                Ort.Text = (string)selectedRow.Row[3];
+            }
         }
     }
 
