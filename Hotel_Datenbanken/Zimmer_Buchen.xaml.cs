@@ -17,7 +17,7 @@ namespace Hotel_Datenbanken
         readonly Structure.NewBuchung buchung = new();
         readonly Dictionary<string, int> additionals = [];
         DataTable selectedRoomsTable = new();
-        DataView roomView;
+        DataView? roomView;
         List<int> selectedRoomIds = new List<int> { };
         string? roomType, roomExtra;
 
@@ -208,10 +208,10 @@ namespace Hotel_Datenbanken
 
         private void DateChanged(object sender, SelectionChangedEventArgs e)
         {
-            DP_End.DisplayDateStart = DP_Start.SelectedDate;
+            DP_End.DisplayDateStart = DP_Start.SelectedDate!.Value.AddDays(1);
             if (DP_End.SelectedDate == null || DP_End.SelectedDate < DP_Start.SelectedDate)
             {
-                DP_End.SelectedDate = DP_Start.SelectedDate;
+                DP_End.SelectedDate = DP_Start.SelectedDate!.Value.AddDays(1);
                 DP_End.IsEnabled = true;
             }
             if (DP_Start.SelectedDate == null)
