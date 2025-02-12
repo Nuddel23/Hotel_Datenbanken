@@ -74,6 +74,10 @@ namespace Hotel_Datenbanken
                         DG_CheckOuts.ItemsSource = fillTable.DefaultView;
                     }
                 }
+
+                //muss noch
+                cmd.CommandText = "";
+
             }
         }
     }
