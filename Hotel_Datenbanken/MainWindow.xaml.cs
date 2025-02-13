@@ -15,6 +15,7 @@ namespace Hotel_Datenbanken
         Zimmer_Buchen zimmer_buchen;
         ErrorPage errorpage;
         Buchungen_einsehen buchungen_einsehen;
+        Rechnung_einsehen rechnung_einsehen;
 
         public MainWindow()
         {
@@ -58,6 +59,12 @@ namespace Hotel_Datenbanken
         {
             buchungen_einsehen = new Buchungen_einsehen(DB);
             Main.Content = buchungen_einsehen;
+        }
+
+        private void Rechnung_einsehen_Click(object sender, RoutedEventArgs e)
+        {
+            rechnung_einsehen = new Rechnung_einsehen(DB);
+            Main.Content = rechnung_einsehen;
         }
     }
 }

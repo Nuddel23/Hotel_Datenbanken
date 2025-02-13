@@ -108,7 +108,6 @@ namespace Hotel_Datenbanken
                 }
             }
             buchung.Additionals = selectdedAdditional;
-
         }
 
         private void Prop_Changed(object sender, System.Windows.RoutedEventArgs e)
@@ -128,7 +127,7 @@ namespace Hotel_Datenbanken
 
 
             RadioButton rbType = Stack_Type.Children.OfType<RadioButton>().Where(rb => rb.IsChecked == true).First();
-            roomType = rbType.Content.ToString()!;
+            roomType = rbType.Content.ToString();
             switch (roomType)
             {
                 case "Einzel":

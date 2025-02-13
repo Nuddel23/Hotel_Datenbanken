@@ -52,7 +52,15 @@ namespace Hotel_Datenbanken
                     {
                         adapter.Fill(fillTable);
 
-                        DG_CheckIns.ItemsSource = fillTable.DefaultView;
+                        if(fillTable.Rows.Count > 0)
+                        {
+                            DG_CheckIns.ItemsSource = fillTable.DefaultView;
+                        }
+                        else
+                        {
+                            //muss noch
+                            return;
+                        }
                     }
                 }
 

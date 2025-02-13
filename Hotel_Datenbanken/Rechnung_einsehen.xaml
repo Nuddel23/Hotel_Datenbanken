@@ -1,0 +1,83 @@
+﻿<Page x:Class="Hotel_Datenbanken.Rechnung_einsehen"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Hotel_Datenbanken"
+      mc:Ignorable="d" d:DesignWidth="1280"
+      Title="Buchungen_einsehen" Height="700">
+
+    <Page.Resources>
+        <Style x:Key="DGRowStyle" TargetType="DataGridRow">
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Aqua"/>
+                    <Setter Property="Foreground" Value="Red"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style TargetType="DataGrid">
+            <Setter Property="RowBackground" Value="#F2F2F2"/>
+            <Setter Property="AlternatingRowBackground" Value="#E6E6E6"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowHeight" Value="30"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="DarkSlateBlue"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Setter Property="BorderBrush" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0.5"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="0,0,0,0">
+
+        <Rectangle Name="Background" Fill="LightGray" Height="720" VerticalAlignment="Top" Margin="0,10,0,0" RenderTransformOrigin="0.504,0.5"/>
+        <StackPanel Orientation="Horizontal" Width="1100" Margin="0,40,0,0">
+            <StackPanel.Resources>
+                <Style x:Key="BaseTB" TargetType="TextBox">
+                    <Setter Property="Margin" Value="0,0,2,0"/>
+                    <Setter Property="Width" Value="100"/>
+                    <Setter Property="Height" Value="25"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <EventSetter Event="LostFocus" Handler="Filter_LostFocus"/>
+                    <EventSetter Event="GotFocus" Handler="Filter_GotFocus"/>
+                </Style>
+            </StackPanel.Resources>
+            <StackPanel VerticalAlignment="Top" Width="540">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource BaseTB}">
+                            <EventSetter Event="TextChanged" Handler="Filter_Gast_TextChanged"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBox x:Name="Vorname" Text="Vorname"/>
+                    <TextBox x:Name="Nachname" Text="Nachname"/>
+                    <TextBox x:Name="Email" Text="Email"/>
+                    <TextBox x:Name="Telefonnummer" Text="Telefonnummer"/>
+                </StackPanel>
+                <DataGrid Name="DG_Gast" RowStyle="{StaticResource DGRowStyle}" Height="500" ColumnWidth="*" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="GastTabelle_SelectionChanged"/>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Top" Width="540" Margin="20,0,0,0">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource BaseTB}">
+                            <EventSetter Event="TextChanged" Handler="Filter_Rechnung_TextChanged"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBox x:Name="RaumNr" Text="RaumNr"/>
+                    <DatePicker x:Name="DP_Date" Width="130" Height="25" Initialized="DP_Date_Initialized"/>
+                </StackPanel>
+                <DataGrid Name="DG_Rechnungen" Height="500" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="BuchungTabelle_SelectionChanged" LostFocus="Tabelle_LostFocus"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
