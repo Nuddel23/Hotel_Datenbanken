@@ -1,6 +1,4 @@
 ﻿using MySqlConnector;
-using System.Diagnostics;
-using System.Windows.Controls.Primitives;
 
 namespace Hotel_Datenbanken
 {
@@ -40,7 +38,7 @@ namespace Hotel_Datenbanken
             int price = 0;
             int days = buchung.CheckOut.DayNumber - buchung.CheckIn.DayNumber;
 
-            foreach(int roomNr in buchung.RoomNrs)
+            foreach (int roomNr in buchung.RoomNrs)
             {
                 string query = "SELECT p.Preis " +
                         "FROM zimmer z " +
@@ -66,9 +64,9 @@ namespace Hotel_Datenbanken
                 price += reader.GetInt32(0) * days;
             }
 
-            if(buchung.Additionals != null)
+            if (buchung.Additionals != null)
             {
-                foreach(int zusatzleistung in buchung.Additionals)
+                foreach (int zusatzleistung in buchung.Additionals)
                 {
                     string query = "SELECT z.Preis " +
                         "FROM zusatzleistung z " +
@@ -112,8 +110,12 @@ namespace Hotel_Datenbanken
 
             cmd = new(query, DB);
             reader = cmd.ExecuteReader();
-            reader.Read();
-            price += reader.GetInt32(0) * days;
+            if (reader.HasRows)
+            {
+                reader.Read();
+                price += reader.GetInt32(0) * days;
+
+            }
             reader.Close();
 
             query = "SELECT z.Preis, be.Start_Datum, be.End_Datum " +
@@ -126,7 +128,7 @@ namespace Hotel_Datenbanken
             reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                days = (reader.GetDateTime(2)- reader.GetDateTime(1)).Days;
+                days = (reader.GetDateTime(2) - reader.GetDateTime(1)).Days;
                 price += reader.GetInt32(0) * days;
             }
             reader.Close();

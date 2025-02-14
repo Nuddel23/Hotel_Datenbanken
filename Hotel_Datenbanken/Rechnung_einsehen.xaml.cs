@@ -1,6 +1,5 @@
 ﻿using MySqlConnector;
 using System.Data;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -16,6 +15,7 @@ namespace Hotel_Datenbanken
 
         string[] Buchungfiltertypen = { "Zimmertyp", "Check_out", "Check_in", "Balkon", "Terrasse", "Aussicht_Strasse", "Zimmernummer" };
         string[] Buchungfilter = new string[7];
+
         public Rechnung_einsehen(MySqlConnection DB)
         {
             InitializeComponent();
@@ -45,16 +45,6 @@ namespace Hotel_Datenbanken
                 dataView_gast = new DataView(GastTabelle_table);
                 DG_Gast.ItemsSource = dataView_gast;
             }
-
-
-            //using (var adapter = new MySqlDataAdapter(buchung_command))
-            //{
-            //    BuchungTabelle_table = new DataTable();
-            //    adapter.Fill(BuchungTabelle_table);
-            //    dataViewBill = new DataView(BuchungTabelle_table);
-            //    DG_Rechnungen.ItemsSource = dataViewBill;
-            //}
-
         }
 
         private void GetGastRechnungen(int gastID)
@@ -77,7 +67,16 @@ namespace Hotel_Datenbanken
                     dataViewBill = new(dtBill);
                 }
                 DG_Rechnungen.ItemsSource = dataViewBill;
-                Debug.Print("lel");
+            }
+        }
+
+        private void GetPropRechnung()
+        {
+            using (MySqlCommand cmd = new())
+            {
+                cmd.Connection = DB;
+
+                cmd.CommandText = "";
             }
         }
 

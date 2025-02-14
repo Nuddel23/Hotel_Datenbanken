@@ -1,26 +1,10 @@
 ﻿using MySqlConnector;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Hotel_Datenbanken
 {
-    /// <summary>
-    /// Interaktionslogik für Gast_hinzufügen.xaml
-    /// </summary>
     public partial class Gast_hinzufügen : Page
     {
         MySqlConnection DB;
@@ -29,6 +13,7 @@ namespace Hotel_Datenbanken
         DataView DataView_gast;
         DataView DataView_adresse;
         int Gast_ID;
+
         public Gast_hinzufügen(MySqlConnection DB, int Gast_ID)
         {
             InitializeComponent();
@@ -89,17 +74,13 @@ namespace Hotel_Datenbanken
             {
                 string filtertext = filtertextbox.Text;
 
-                // Filter auf die DataView anwenden
                 if (string.IsNullOrWhiteSpace(filtertext) || filtertext == filtertextbox.Name)
                 {
-                    // Wenn das Textfeld leer ist, wird der Filter entfernt
                     DataView_gast.RowFilter = string.Empty;
                 }
                 else
                 {
-                    // Filter nach Name anwenden (oder anderen Spalten)
                     DataView_gast.RowFilter = $"{filtertextbox.Name} LIKE '%{filtertext}%'";
-
                 }
 
             }
@@ -175,7 +156,7 @@ namespace Hotel_Datenbanken
                     Adr_ID = reader.GetInt32(0);
                     reader.Close();
                 }
-                
+
             }
 
             query = $"SELECT Gast_ID FROM Gast WHERE Vorname = \"{vorname}\" AND Nachname = \"{nachname}\" AND Email = \"{email}\" AND Telefonnummer = \"{telefonnummer}\"";
@@ -192,7 +173,7 @@ namespace Hotel_Datenbanken
                     insertCmd.ExecuteNonQuery();
 
                     query = "SELECT Gast_ID FROM Gast ORDER BY Gast_ID DESC";
-              
+
                     MySqlCommand scopeCmd = new(query, DB);
                     reader = scopeCmd.ExecuteReader();
                     reader.Read();
