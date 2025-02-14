@@ -50,7 +50,7 @@ namespace Hotel_Datenbanken
 
         void tabellenfüllen()
         {
-            using (var command = new MySqlCommand($"SELECT * FROM gast;", DB))
+            using (var command = new MySqlCommand($"SELECT `gast`.`Vorname`, `gast`.`Nachname`, `gast`.`Email`, `gast`.`Telefonnummer`\r\nFROM `gast`;", DB))
             {
                 using (var adapter = new MySqlDataAdapter(command))
                 {

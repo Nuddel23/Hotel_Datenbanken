@@ -5,37 +5,53 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Hotel_Datenbanken"
       mc:Ignorable="d" 
-      d:DesignHeight="500" d:DesignWidth="800"
+      d:DesignHeight="520" d:DesignWidth="820"
       Title="Gast_hinzufügen">
+
+    <Page.Resources>
+        <Style TargetType="DataGrid">
+            <Setter Property="RowBackground" Value="#F2F2F2"/>
+            <Setter Property="AlternatingRowBackground" Value="#E6E6E6"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowHeight" Value="30"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="DarkSlateBlue"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Setter Property="BorderBrush" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0.5"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
 
     <Grid Margin="0,0,0,0" Width="800" Height="500">
         <Grid Margin="20,0,20,20">
             <Label Content="Gast:" Margin="0,15"/>
             <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,15,0,0">
-                <TextBox x:Name="Vorname" Text="Vorname"                 MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
-                <TextBox x:Name="Nachname" Text="Nachname"               MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
-                <TextBox x:Name="Email" Text="Email"                     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
-                <TextBox x:Name="Telefonnummer" Text="Telefonnummer"     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged"/>
+
+                <TextBox x:Name="Vorname" Text="Vorname"                 MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged" Margin="0,0,5,0"/>
+                <TextBox x:Name="Nachname" Text="Nachname"               MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged" Margin="0,0,5,0"/>
+                <TextBox x:Name="Email" Text="Email"                     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged" Margin="0,0,5,0"/>
+                <TextBox x:Name="Telefonnummer" Text="Telefonnummer"     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged" Margin="0,0,5,0"/>
 
                 <Button x:Name="Adresse_reset" Content="X" Width="20" Click="Adresse_reset_Click" Margin="20,0,0,0"/>
-                <TextBox x:Name="Straße" Text="Straße"                  MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
-                <TextBox x:Name="Hausnummer" Text="Hausnummer"          MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
-                <TextBox x:Name="PLZ" Text="PLZ"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
+                <TextBox x:Name="Straße" Text="Straße"                  MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged" Margin="0,0,5,0"/>
+                <TextBox x:Name="Hausnummer" Text="Hausnummer"          MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged" Margin="0,0,5,0"/>
+                <TextBox x:Name="PLZ" Text="PLZ"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged" Margin="0,0,5,0"/>
 
-                <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged"/>
-                <Button x:Name="Hinzufügen" Height="20" Width="70" Content="Hinzufügen" Click="Hinzufügen_Click" Margin="20,0,0,0"/>
+                <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged" Margin="0,0,5,0"/>
             </StackPanel>
 
-            <Button x:Name="Abbrechen" Height="20" Width="70" Click="Abbrechen_Click" Margin="580,430,100,10">Abbrechen</Button>
-            <Button x:Name="Bestätigen" Height="20" Width="70" Content="Bestätigen" Click="Bestätigen_Click" Margin="670,430,20,10"/>
+            <Button x:Name="Abbrechen" Height="20" Width="70" Click="Abbrechen_Click" Margin="580,430,100,30">Abbrechen</Button>
+            <Button x:Name="Hinzufügen" Height="20" Width="70" Content="Hinzufügen" Click="Hinzufügen_Click"  Margin="670,430,20,30"/>
         </Grid>
-        <Grid Margin="20,0,350,30">
-            <Label Content="Sotieren:" Margin="0,55"/>
-            <DataGrid Name="tabelle2" Margin="0,80,0,35" IsTextSearchEnabled="True" IsReadOnly="True"/>
-        </Grid>
-        <Grid Margin="470,0,40,30">
-            <Label Content="Sotieren:" Margin="0,55"/>
-            <DataGrid Name="tabelle" Margin="0,80,0,37" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="tabelle_SelectionChanged"/>
-        </Grid>
+        <DataGrid Name="tabelle2" Margin="15,50,355,80" IsTextSearchEnabled="True" IsReadOnly="True"/>
+        <DataGrid Name="tabelle" Margin="460,50,30,80" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="tabelle_SelectionChanged"/>
     </Grid>
 </Page>

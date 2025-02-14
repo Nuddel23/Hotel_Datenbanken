@@ -41,16 +41,16 @@ namespace Hotel_Datenbanken
 
         void tabellenfüllen(int? buchung_ID, int? gast_ID)
         {
-            MySqlCommand gast_command = new MySqlCommand($"SELECT * FROM gast;", DB);
-            MySqlCommand buchung_command = new MySqlCommand($"SELECT `buchung`.*, `zimmer`.*\r\nFROM `buchung` \r\n\tLEFT JOIN `zimmer` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID`;", DB);
+            MySqlCommand gast_command = new MySqlCommand($"SELECT `gast`.`Vorname`, `gast`.`Nachname`, `gast`.`Email`, `gast`.`Telefonnummer`, `gast`.`Gast_ID`\r\nFROM `gast`;", DB);
+            MySqlCommand buchung_command = new MySqlCommand($"SELECT `zimmer`.`Zimmernummer`, `buchung`.`Check_in`, `buchung`.`Check_out`, `zimmer`.`Zimmertyp`, `zimmer`.`Etage`, `zimmer`.`Balkon`, `zimmer`.`Terrasse`, `zimmer`.`Aussicht_Strasse`, `buchung`.`Buchungs_ID`\r\nFROM `zimmer` \r\n\tINNER JOIN `buchung` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID`;", DB);
 
             if (gast_ID != null)
             {
-                buchung_command = new MySqlCommand($"SELECT `buchung`.*, `buchung_hat_gast`.`Gast_ID`, `zimmer`.*\r\nFROM `buchung` \r\n\tLEFT JOIN `buchung_hat_gast` ON `buchung_hat_gast`.`Buchungs_ID` = `buchung`.`Buchungs_ID` \r\n\tLEFT JOIN `zimmer` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID`\r\nWHERE `buchung_hat_gast`.`Gast_ID` = '{gast_ID}';", DB);
+                buchung_command = new MySqlCommand($"SELECT `zimmer`.`Zimmernummer`, `buchung`.`Check_in`, `buchung`.`Check_out`, `zimmer`.`Zimmertyp`, `zimmer`.`Etage`, `zimmer`.`Balkon`, `zimmer`.`Terrasse`, `zimmer`.`Aussicht_Strasse`, `buchung_hat_gast`.* \r\nFROM `zimmer` \r\n\tINNER JOIN `buchung` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID` \r\n\tLEFT JOIN `buchung_hat_gast` ON `buchung_hat_gast`.`Buchungs_ID` = `buchung`.`Buchungs_ID`\r\nWHERE `buchung_hat_gast`.`Gast_ID` = '{gast_ID}';", DB);
             }
             if (buchung_ID != null)
             {
-                gast_command = new MySqlCommand($"SELECT `gast`.*, `buchung_hat_gast`.`Buchungs_ID`\r\nFROM `gast` \r\n\tLEFT JOIN `buchung_hat_gast` ON `buchung_hat_gast`.`Gast_ID` = `gast`.`Gast_ID`\r\nWHERE `buchung_hat_gast`.`Buchungs_ID` = '{buchung_ID}';", DB);
+                gast_command = new MySqlCommand($"SELECT `gast`.`Vorname`, `gast`.`Nachname`, `gast`.`Email`, `gast`.`Telefonnummer`, `buchung_hat_gast`.* \r\nFROM `gast` \r\n\tLEFT JOIN `buchung_hat_gast` ON `buchung_hat_gast`.`Gast_ID` = `gast`.`Gast_ID`\r\nWHERE `buchung_hat_gast`.`Buchungs_ID` = '{buchung_ID}';", DB);
             }
 
 
@@ -151,11 +151,6 @@ namespace Hotel_Datenbanken
             }
         }
 
-        private void DP_Start_Initialized(object sender, EventArgs e)
-        {
-
-        }
-
         private void DateChanged(object sender, SelectionChangedEventArgs e)
         {
             DP_End.DisplayDateStart = DP_Start.SelectedDate;
@@ -179,11 +174,6 @@ namespace Hotel_Datenbanken
                 Buchungfilter[2] = "";
             }
             Buchung_Filtern();
-        }
-
-        private void DP_End_Initialized(object sender, EventArgs e)
-        {
-            DP_End.IsEnabled = false;
         }
 
         private void CB_Balcony_Checked(object sender, System.Windows.RoutedEventArgs e)
@@ -278,7 +268,7 @@ namespace Hotel_Datenbanken
         {
             if (BuchungTabelle.SelectedItem is DataRowView selectedRow)
             {
-                tabellenfüllen((int)selectedRow.Row[0], null);
+                tabellenfüllen((int)selectedRow.Row[selectedRow.Row.ItemArray.Length - 1], null);
                 if (BuchungTabelle.IsFocused == false)
                 {
                     BuchungTabelle.Focus();
@@ -290,7 +280,7 @@ namespace Hotel_Datenbanken
         {
             if (GastTabelle.SelectedItem is DataRowView selectedRow)
             {
-                tabellenfüllen(null, (int)selectedRow.Row[0]);
+                tabellenfüllen(null, (int)selectedRow.Row[selectedRow.Row.ItemArray.Length -1]);
                 if (GastTabelle.IsFocused == false)
                 {
                     GastTabelle.Focus();

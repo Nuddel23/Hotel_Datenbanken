@@ -5,29 +5,50 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Hotel_Datenbanken"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="720" d:DesignWidth="1280"
       Title="Gäste">
 
+    <Page.Resources>
+        <Style TargetType="DataGrid">
+            <Setter Property="RowBackground" Value="#F2F2F2"/>
+            <Setter Property="AlternatingRowBackground" Value="#E6E6E6"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowHeight" Value="30"/>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="DarkSlateBlue"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Setter Property="BorderBrush" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0.5"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
     <Grid>
-        <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="5,5">
+        <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="5,10,0,0">
             <Button x:Name="Gast_hinzufügen" Content="Gast_hinzufügen" Width="100" Click="Gast_hinzufügen_Click" />
-            <CheckBox x:Name="Gast_bearbeiten" Content="bearbeiten" Width="100" Click="Gast_bearbeiten_IsEnabledChanged" Margin="5,5,0,0"/>
-            <Button x:Name="Gast_löschen" Content="Löschen" Width="100" Click="Gast_löschen_Click"/>
+            
         </StackPanel>
         <Grid x:Name="Gast_Seite" Visibility="Visible" Margin="0,5">
-            <Label Content="Filter:" Margin="0,15"/>
             <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,35,0,0">
-                <TextBox x:Name="Vorname" Text="Vorname"                MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
-                <TextBox x:Name="Nachname" Text="Nachname"              MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
-                <TextBox x:Name="Email" Text="Email"                    MinWidth="100" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
-                <TextBox x:Name="Telefonnummer" Text="Telefonnummer"    MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
-                <TextBox x:Name="Straße" Text="Straße"                  MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
-                <TextBox x:Name="Hausnummer" Text="Hausnummer"          MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
-                <TextBox x:Name="PLZ" Text="PLZ"                        MinWidth="40" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
-                <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"/>
+                <TextBox x:Name="Vorname" Text="Vorname"                MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged"  Margin="5,0,0,0"/>
+                <TextBox x:Name="Nachname" Text="Nachname"              MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged" Margin="5,0,0,0"/>
+                <TextBox x:Name="Email" Text="Email"                    MinWidth="100" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged" Margin="5,0,0,0"/>
+                <TextBox x:Name="Telefonnummer" Text="Telefonnummer"    MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged" Margin="5,0,0,0"/>
+                <TextBox x:Name="Straße" Text="Straße"                  MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged" Margin="5,0,0,0"/>
+                <TextBox x:Name="Hausnummer" Text="Hausnummer"          MinWidth="80" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged" Margin="5,0,0,0"/>
+                <TextBox x:Name="PLZ" Text="PLZ"                        MinWidth="40" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged" Margin="5,0,0,0"/>
+                <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Name_LostFocus" GotFocus="Name_GotFocus" TextChanged="Name_TextChanged" Margin="5,0,0,0"/>
+                <Button x:Name="Gast_löschen" Content="Löschen" Width="100" Click="Gast_löschen_Click" Margin="5,0,0,0"/>
+                <CheckBox x:Name="Gast_bearbeiten" Content="bearbeiten" Width="100" Click="Gast_bearbeiten_IsEnabledChanged" Margin="2,2,0,0"/>
             </StackPanel>
-            <Label Content="Sotieren:" Margin="0,55"/>
-            <DataGrid Name="tabelle" Margin="0,80,0,0" IsTextSearchEnabled="True" IsReadOnly="True" CellEditEnding="tabelle_CellEditEnding" SelectionChanged="tabelle_SelectionChanged"/>
+            <DataGrid Name="tabelle" Margin="5,80,5,5" IsTextSearchEnabled="True" IsReadOnly="True" CellEditEnding="tabelle_CellEditEnding" SelectionChanged="tabelle_SelectionChanged"/>
         </Grid>
     </Grid>
 </Page>
