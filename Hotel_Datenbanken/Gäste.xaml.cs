@@ -61,7 +61,7 @@ namespace Hotel_Datenbanken
         public int Wert;
         private void Gast_hinzufügen_Click(object sender, RoutedEventArgs e)
         {
-            gast_hinzufügen = new Gast_hinzufügen(DB, Wert);
+            gast_hinzufügen = new Gast_hinzufügen(DB);
             Gast_hinzufügen_Window = new Window();
             Gast_hinzufügen_Window.Content = gast_hinzufügen;
             Gast_hinzufügen_Window.Width = 800;
