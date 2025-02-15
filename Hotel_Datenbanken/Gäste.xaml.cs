@@ -25,7 +25,6 @@ namespace Hotel_Datenbanken
     public partial class Gäste : Page
     {
         MySqlConnection DB;
-        Frame frame;
         DataTable GastTablle = new DataTable();
         DataView DataView;
         Gast_hinzufügen gast_hinzufügen;
@@ -33,11 +32,10 @@ namespace Hotel_Datenbanken
         
 
 
-        public Gäste(MySqlConnection DB, Frame frame)
+        public Gäste(MySqlConnection DB)
         {
             InitializeComponent();
             this.DB = DB;
-            this.frame = frame;
             zeige_Gäste();
 
             DataView = new DataView(GastTablle);
