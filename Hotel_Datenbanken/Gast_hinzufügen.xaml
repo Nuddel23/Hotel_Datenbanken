@@ -48,10 +48,13 @@
                 <TextBox x:Name="Ort" Text="Ort"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged" Margin="0,0,5,0"/>
             </StackPanel>
 
-            <Button x:Name="Abbrechen" Height="20" Width="70" Click="Abbrechen_Click" Margin="580,430,100,30">Abbrechen</Button>
-            <Button x:Name="Hinzufügen" Height="20" Width="70" Content="Hinzufügen" Click="Hinzufügen_Click"  Margin="670,430,20,30"/>
+            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="500,430,20,30">
+                <Button x:Name="Abbrechen" Height="20" Width="70" Click="Abbrechen_Click" Margin="10,0,0,0">Abbrechen</Button>
+                <Button x:Name="Bestätigen" Height="20" Width="70" Content="Bestätigen" Click="Bestätigen_Click" IsEnabled="False" Margin="10,0,0,0"/>
+                <Button x:Name="Hinzufügen" Height="20" Width="70" Content="Hinzufügen" Click="Hinzufügen_Click" IsEnabled="False" Margin="10,0,0,0"/>
+            </StackPanel>
         </Grid>
-        <DataGrid Name="tabelle2" Margin="15,50,355,80" IsTextSearchEnabled="True" IsReadOnly="True"/>
+        <DataGrid Name="tabelle2" Margin="15,50,355,80" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="tabelle2_SelectionChanged"/>
         <DataGrid Name="tabelle" Margin="460,50,30,80" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="tabelle_SelectionChanged"/>
     </Grid>
 </Page>

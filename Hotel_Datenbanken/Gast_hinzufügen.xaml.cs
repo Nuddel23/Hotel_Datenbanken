@@ -32,7 +32,7 @@ namespace Hotel_Datenbanken
 
         void tabellenfüllen()
         {
-            using (var command = new MySqlCommand($"SELECT `gast`.`Vorname`, `gast`.`Nachname`, `gast`.`Email`, `gast`.`Telefonnummer`\r\nFROM `gast`;", DB))
+            using (var command = new MySqlCommand($"SELECT `gast`.`Vorname`, `gast`.`Nachname`, `gast`.`Email`, `gast`.`Telefonnummer`, `gast`.`Gast_ID` \r\nFROM `gast`;", DB))
             {
                 using (var adapter = new MySqlDataAdapter(command))
                 {
@@ -63,6 +63,9 @@ namespace Hotel_Datenbanken
             {
                 textbox_sender.Clear();
             }
+
+            Bestätigen.IsEnabled = false;
+            Hinzufügen.IsEnabled = true;
         }
 
         private void Filter_gast_TextChanged(object sender, TextChangedEventArgs e)
@@ -205,6 +208,19 @@ namespace Hotel_Datenbanken
             Window.GetWindow(this)?.Close();
         }
 
+        private void Bestätigen_Click(object sender, RoutedEventArgs e)
+        {
+            if (tabelle2.SelectedItem is DataRowView selectedRow)
+            {
+                WertGeändert?.Invoke(this, Convert.ToInt32(selectedRow.Row[4]));
+                Window.GetWindow(this)?.Close();
+            }
+            else
+            {
+                MessageBox.Show("Es wurde kein Gast ausgewählt");
+            }
+        }
+
         private void Adresse_reset_Click(object sender, RoutedEventArgs e)
         {
             Straße.Text = "";
@@ -222,6 +238,12 @@ namespace Hotel_Datenbanken
                 PLZ.Text = (string)selectedRow.Row[2];
                 Ort.Text = (string)selectedRow.Row[3];
             }
+        }
+
+        private void tabelle2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Bestätigen.IsEnabled = true;
+            Hinzufügen.IsEnabled = false;
         }
     }
 
