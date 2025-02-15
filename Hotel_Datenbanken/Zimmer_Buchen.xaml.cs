@@ -18,9 +18,9 @@ namespace Hotel_Datenbanken
         readonly Dictionary<string, int> additionals = [];
         DataTable selectedRoomsTable = new();
         DataView? roomView;
-        Gast_hinzufügen gast_Hinzufügen;
-        Window Gast_Hinzufügen_Window;
-        Homepage homepage;
+        Gast_hinzufügen? gast_Hinzufügen;
+        Window? Gast_Hinzufügen_Window;
+        Homepage? homepage;
         List<int> selectedRoomIds = new List<int> { };
         string? roomType, roomExtra;
 
@@ -287,7 +287,7 @@ namespace Hotel_Datenbanken
             string tbAddi = string.Join(", ", additions);
             TB_Extra.Text = tbAddi;
 
-            ConfirmationScreen.Visibility = System.Windows.Visibility.Visible;
+            ConfirmationScreen.Visibility = Visibility.Visible;
 
         }
 
@@ -348,7 +348,6 @@ namespace Hotel_Datenbanken
                 MessageBox.Show("Erfolgreich");
                 homepage = new(DB);
                 frame.Content = homepage;
-
             }
             catch (Exception ex)
             {

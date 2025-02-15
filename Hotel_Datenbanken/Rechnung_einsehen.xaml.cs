@@ -32,7 +32,7 @@ namespace Hotel_Datenbanken
             using (MySqlCommand cmd = new())
             {
                 cmd.Connection = DB;
-                cmd.CommandText = "SELECT r.Zahlungsart, COUNT(*) AS Anz_Zimmer, MIN(DATE_FORMAT(b.Check_In, '%d.%m.%Y')) AS Check_In, MAX( DATE_FORMAT(b.Check_Out, '%d.%m.%Y')) AS Check_Out " +
+                cmd.CommandText = "SELECT r.Zahlungsart, COUNT(*) AS Anz_Zimmer, MIN(DATE_FORMAT(b.Check_In, '%d.%m.%Y')) AS Von, MAX( DATE_FORMAT(b.Check_Out, '%d.%m.%Y')) AS Bis " +
                     "FROM gast g " +
                     "INNER JOIN rechnung r ON g.Gast_ID = r.Gast_ID " +
                     "INNER JOIN buchung b ON r.Rechnungs_ID = b.Rechnungs_ID " +
@@ -50,7 +50,7 @@ namespace Hotel_Datenbanken
             }
         }
 
-        private void GetPropRechnung(bool date, bool roomNr)
+        private void GetPropRechnung(int? gastID = null)
         {
             using (MySqlCommand cmd = new())
             {
@@ -58,7 +58,7 @@ namespace Hotel_Datenbanken
 
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append("SELECT r.Zahlungsart, COUNT(*) AS Anz_Zimmer, MIN(DATE_FORMAT(b.Check_In, '%d.%m.%Y')) AS Check_In, MAX( DATE_FORMAT(b.Check_Out, '%d.%m.%Y')) AS Check_Out " +
+                sb.Append("SELECT r.Rechnungs_ID, r.Gast_ID, r.Zahlungsart, COUNT(*) AS Anz_Zimmer, MIN(DATE_FORMAT(b.Check_In, '%d.%m.%Y')) AS Von, MAX( DATE_FORMAT(b.Check_Out, '%d.%m.%Y')) AS Bis " +
                     "FROM rechnung r " +
                     "INNER JOIN buchung b ON r.Rechnungs_ID = b.Rechnungs_ID " +
                     "WHERE r.Rechnungs_ID IN (" +
@@ -67,22 +67,27 @@ namespace Hotel_Datenbanken
                     "   INNER JOIN zimmer z ON b2.Zimmer_ID = z.Zimmer_ID" +
                     "   WHERE 1=1");
 
-                if(date)
+                if(DP_Date.SelectedDate != null)
                 {
                     sb.Append(
                     $" AND '{DP_Date.SelectedDate!.Value.ToString("yyyy-MM-dd")}' BETWEEN b2.Check_In AND b2.Check_Out"
                     );
-                    Debug.Print("Date");
                 }
 
-                if(roomNr)
+                if(TB_RaumNr.Text.Length > 0)
                 {
                     sb.Append($" AND z.Zimmernummer = {TB_RaumNr.Text}");
-                    Debug.Print("Nummer");
                 }
 
-                sb.Append(") GROUP BY r.Rechnungs_ID");
+                sb.Append(") ");
 
+                if(gastID != null)
+                {
+                    sb.Append($"AND r.Gast_ID = {gastID} ");
+                }
+
+                sb.Append("GROUP BY r.Rechnungs_ID");
+                Debug.WriteLine(sb.ToString());
                 cmd.CommandText = sb.ToString();
                
                 using (MySqlDataAdapter adapter = new())
@@ -94,6 +99,7 @@ namespace Hotel_Datenbanken
                     dataViewBill = new(dtGast);
                 }
                 DG_Rechnungen.ItemsSource = dataViewBill;
+                DG_format(DG_Rechnungen, 2);
             }
         }
 
@@ -114,7 +120,7 @@ namespace Hotel_Datenbanken
                 {
                     sb.Append($"WHERE g.Gast_ID = {gastId}");
                 }
-
+                Debug.WriteLine(sb.ToString());
                 cmd.CommandText = sb.ToString();
 
                 using (MySqlDataAdapter adapter = new())
@@ -126,7 +132,7 @@ namespace Hotel_Datenbanken
                     dataViewGast = new(dtBill);
                 }
                 DG_Gast.ItemsSource = dataViewGast;
-                DG_fill();
+                DG_format(DG_Gast);
             }
         }
 
@@ -169,7 +175,7 @@ namespace Hotel_Datenbanken
 
         private void RoomNr_TextChanged(object sender, TextChangedEventArgs e)
         {
-                GetPropRechnung(DP_Date.SelectedDate != null, TB_RaumNr.Text.Length > 0);
+                GetPropRechnung();
         }
 
 
@@ -201,14 +207,11 @@ namespace Hotel_Datenbanken
             
         }
 
-        private void BuchungTabelle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void DG_RechnungSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DG_Rechnungen.SelectedItem is DataRowView selectedRow)
+            if(DG_Rechnungen.SelectedItem is DataRowView selectedRow)
             {
-                if (DG_Rechnungen.IsFocused == false)
-                {
-                    DG_Rechnungen.Focus();
-                }
+                GetRechnungsGast((int)selectedRow.Row[1]);
             }
         }
 
@@ -216,18 +219,13 @@ namespace Hotel_Datenbanken
         {
             if (DG_Gast.SelectedItem is DataRowView selectedRow)
             {
-                Debug.Print(selectedRow.Row[0].ToString());
-                GetGastsRechnungen((int)selectedRow.Row[0]);
-                if (DG_Gast.IsFocused == false)
-                {
-                    DG_Gast.Focus();
-                }
+                GetPropRechnung((int)selectedRow.Row[0]);
             }
         }
 
         private void DP_Date_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-                GetPropRechnung(DP_Date.SelectedDate != null, TB_RaumNr.Text.Length > 0);
+            GetPropRechnung();
         }
 
         private void TB_RaumNr_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -235,15 +233,26 @@ namespace Hotel_Datenbanken
             e.Handled = !int.TryParse(e.Text, out _);
         }
 
-        private void DG_fill()
+        private void DG_format(DataGrid toFormat, int anzColoumns = 1)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (DG_Gast.Columns.Count > 0)
+                if (toFormat.Columns.Count > 0)
                 {
-                    DG_Gast.Columns[0].Visibility = Visibility.Collapsed; // Erste Spalte verstecken
+                    for (int i = 0; i < anzColoumns; i++)
+                    {
+                        toFormat.Columns[i].Visibility = Visibility.Collapsed;
+                    }
                 }
             }), System.Windows.Threading.DispatcherPriority.Render);
+        }
+
+        private void DG_Rechnungen_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (DG_Rechnungen.SelectedItem is DataRowView selectedRow)
+            { 
+                Buchungen_einsehen buchungen_Einsehen = new(DB, (int)selectedRow.Row[0]);
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Hotel_Datenbanken
 
         public class NewBuchung
         {
-            public int GuestId { get; set; }
+            public int? GuestId { get; set; }
             public List<int> RoomNrs { get; set; }
             public DateOnly CheckIn { get; set; }
             public DateOnly CheckOut { get; set; }

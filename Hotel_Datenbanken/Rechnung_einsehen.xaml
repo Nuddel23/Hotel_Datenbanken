@@ -59,12 +59,11 @@
                             <EventSetter Event="TextChanged" Handler="Filter_Gast_TextChanged"/>
                         </Style>
                     </StackPanel.Resources>
-                    <TextBox x:Name="Vorname" Text="Vorname"/>
-                    <TextBox x:Name="Nachname" Text="Nachname"/>
+                    <TextBox x:Name="Name" Text="Name"/>
                     <TextBox x:Name="Email" Text="Email"/>
                     <TextBox x:Name="Telefonnummer" Text="Telefonnummer"/>
                 </StackPanel>
-                <DataGrid Name="DG_Gast" RowStyle="{StaticResource DGRowStyle}" SelectionMode="Single" HeadersVisibility="Column" Height="500" ColumnWidth="*" AutoGenerateColumns="True" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="GastTabelle_SelectionChanged">
+                <DataGrid Name="DG_Gast" RowStyle="{StaticResource DGRowStyle}" SelectionMode="Single" HeadersVisibility="Column" Height="500" ColumnWidth="Auto" AutoGenerateColumns="True" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="GastTabelle_SelectionChanged">
                 </DataGrid>
             </StackPanel>
             <StackPanel VerticalAlignment="Top" Width="450" Margin="30,0,0,0">
@@ -72,7 +71,7 @@
                     <TextBox x:Name="TB_RaumNr" PreviewTextInput="TB_RaumNr_PreviewTextInput" Width="100" TextChanged="RoomNr_TextChanged"/>
                     <DatePicker x:Name="DP_Date" Width="130" Height="25" SelectedDateChanged="DP_Date_SelectedDateChanged"/>
                 </StackPanel>
-                <DataGrid Name="DG_Rechnungen" Height="500" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="BuchungTabelle_SelectionChanged"/>
+                <DataGrid Name="DG_Rechnungen" Height="500" ColumnWidth="Auto" SelectionMode="Single" HeadersVisibility="Column" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="DG_RechnungSelectionChanged" MouseDoubleClick="DG_Rechnungen_MouseDoubleClick"/>
             </StackPanel>
         </StackPanel>
     </Grid>
