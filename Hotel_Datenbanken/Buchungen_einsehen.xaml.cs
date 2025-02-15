@@ -25,17 +25,21 @@ namespace Hotel_Datenbanken
     public partial class Buchungen_einsehen : Page
     {
         MySqlConnection DB;
+        int Rechnung_ID;
         DataTable GastTabelle_table = new DataTable();
         DataTable BuchungTabelle_table = new DataTable();
         DataView DataView_gast;
         DataView DataView_buchung;
+        Window Rechnung_window;
+        Rechnung rechnung;
 
         string[] Buchungfiltertypen = { "Zimmertyp", "Check_out", "Check_in", "Balkon", "Terrasse", "Aussicht_Strasse", "Zimmernummer" };
         string[] Buchungfilter = new string[7];
-        public Buchungen_einsehen(MySqlConnection DB)
+        public Buchungen_einsehen(MySqlConnection DB, int Rechnung_ID)
         {
             InitializeComponent();
             this.DB = DB;
+            this.Rechnung_ID = Rechnung_ID;
             tabellenfüllen(null, null);
         }
 
@@ -291,6 +295,16 @@ namespace Hotel_Datenbanken
         private void Tabelle_LostFocus(object sender, RoutedEventArgs e)
         {
             tabellenfüllen(null, null);
+        }
+
+        private void Rechnungen_anzeigen_Click(object sender, RoutedEventArgs e)
+        {
+            rechnung = new Rechnung(DB, 1);
+            Rechnung_window = new Window();
+            Rechnung_window.Content = rechnung;
+            Rechnung_window.Width = 820;
+            Rechnung_window.Height = 500;
+            Rechnung_window.Show();
         }
     }
 }

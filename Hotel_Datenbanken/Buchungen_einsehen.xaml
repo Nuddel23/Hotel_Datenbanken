@@ -61,14 +61,17 @@
         </GroupBox>
 
         <Grid Margin="139,20,10,10">
-            <Grid Margin="570,0,10,615">
-                <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="0,15,0,0">
-                    <TextBox x:Name="Vorname" Text="Vorname"                 MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
-                    <TextBox x:Name="Nachname" Text="Nachname"               MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
-                    <TextBox x:Name="Email" Text="Email"                     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
-                    <TextBox x:Name="Telefonnummer" Text="Telefonnummer"     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
-                </StackPanel>
-            </Grid>
+            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="10,15,570,615">
+                <Button Name="Rechnung_anzeigen" Content="Rechnung anzeigen" Click="Rechnungen_anzeigen_Click" Width="120"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="570,15,10,615">
+                <TextBox x:Name="Vorname" Text="Vorname"                 MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
+                <TextBox x:Name="Nachname" Text="Nachname"               MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
+                <TextBox x:Name="Email" Text="Email"                     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
+                <TextBox x:Name="Telefonnummer" Text="Telefonnummer"     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
+            </StackPanel>
+
             <DataGrid Name="BuchungTabelle" Margin="10,55,570,30" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="BuchungTabelle_SelectionChanged"   LostFocus="Tabelle_LostFocus"/>
             <DataGrid Name="GastTabelle"    Margin="570,55,10,30" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="GastTabelle_SelectionChanged"      LostFocus="Tabelle_LostFocus"/>
         </Grid>

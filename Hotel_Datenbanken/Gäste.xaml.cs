@@ -46,7 +46,7 @@ namespace Hotel_Datenbanken
         void zeige_Gäste()
         {
 
-            using (var command = new MySqlCommand($"SELECT `gast`.* , `adresse`.*, `plz`.`Ort`\r\nFROM `gast`\r\n\tLEFT JOIN `adresse` ON `gast`.`Adress_ID` = `adresse`.`Adress_ID` \r\n\tLEFT JOIN `plz` ON `adresse`.`PLZ` = `plz`.`PLZ`;", DB))
+            using (var command = new MySqlCommand($"SELECT `gast`.`Vorname`, `gast`.`Nachname`, `gast`.`Email`, `gast`.`Telefonnummer`, `adresse`.`Straße`, `adresse`.`Hausnummer`, `adresse`.`PLZ`, `plz`.`Ort`\r\nFROM `gast` \r\n\tLEFT JOIN `adresse` ON `gast`.`Adress_ID` = `adresse`.`Adress_ID` \r\n\tLEFT JOIN `plz` ON `adresse`.`PLZ` = `plz`.`PLZ`;", DB))
             {
                 using (var adapter = new MySqlDataAdapter(command))
                 {

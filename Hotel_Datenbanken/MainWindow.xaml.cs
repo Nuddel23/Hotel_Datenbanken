@@ -57,7 +57,7 @@ namespace Hotel_Datenbanken
 
         private void Buchungen_einsehen_Click(object sender, RoutedEventArgs e)
         {
-            buchungen_einsehen = new Buchungen_einsehen(DB);
+            buchungen_einsehen = new Buchungen_einsehen(DB,0);
             Main.Content = buchungen_einsehen;
         }
 
