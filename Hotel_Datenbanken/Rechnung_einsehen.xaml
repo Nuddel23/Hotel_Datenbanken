@@ -41,7 +41,7 @@
     <Grid Margin="0,0,0,0">
 
         <Rectangle Name="Background" Fill="LightGray" Height="720" VerticalAlignment="Top" Margin="0,10,0,0" RenderTransformOrigin="0.504,0.5"/>
-        <StackPanel Orientation="Horizontal" Width="1100" Margin="0,40,0,0">
+        <StackPanel Orientation="Horizontal" Width="1100" Margin="-0,70,0,0">
             <StackPanel.Resources>
                 <Style x:Key="BaseTB" TargetType="TextBox">
                     <Setter Property="Margin" Value="0,0,2,0"/>
@@ -52,7 +52,7 @@
                     <EventSetter Event="GotFocus" Handler="Filter_GotFocus"/>
                 </Style>
             </StackPanel.Resources>
-            <StackPanel VerticalAlignment="Top" Width="540">
+            <StackPanel VerticalAlignment="Top" Width="590">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <StackPanel.Resources>
                         <Style TargetType="TextBox" BasedOn="{StaticResource BaseTB}">
@@ -64,19 +64,15 @@
                     <TextBox x:Name="Email" Text="Email"/>
                     <TextBox x:Name="Telefonnummer" Text="Telefonnummer"/>
                 </StackPanel>
-                <DataGrid Name="DG_Gast" RowStyle="{StaticResource DGRowStyle}" Height="500" ColumnWidth="*" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="GastTabelle_SelectionChanged"/>
+                <DataGrid Name="DG_Gast" RowStyle="{StaticResource DGRowStyle}" SelectionMode="Single" HeadersVisibility="Column" Height="500" ColumnWidth="*" AutoGenerateColumns="True" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="GastTabelle_SelectionChanged">
+                </DataGrid>
             </StackPanel>
-            <StackPanel VerticalAlignment="Top" Width="540" Margin="20,0,0,0">
+            <StackPanel VerticalAlignment="Top" Width="450" Margin="30,0,0,0">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <StackPanel.Resources>
-                        <Style TargetType="TextBox" BasedOn="{StaticResource BaseTB}">
-                            <EventSetter Event="TextChanged" Handler="Filter_Rechnung_TextChanged"/>
-                        </Style>
-                    </StackPanel.Resources>
-                    <TextBox x:Name="RaumNr" Text="RaumNr"/>
-                    <DatePicker x:Name="DP_Date" Width="130" Height="25" Initialized="DP_Date_Initialized"/>
+                    <TextBox x:Name="TB_RaumNr" PreviewTextInput="TB_RaumNr_PreviewTextInput" Width="100" TextChanged="RoomNr_TextChanged"/>
+                    <DatePicker x:Name="DP_Date" Width="130" Height="25" SelectedDateChanged="DP_Date_SelectedDateChanged"/>
                 </StackPanel>
-                <DataGrid Name="DG_Rechnungen" Height="500" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="BuchungTabelle_SelectionChanged" LostFocus="Tabelle_LostFocus"/>
+                <DataGrid Name="DG_Rechnungen" Height="500" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="BuchungTabelle_SelectionChanged"/>
             </StackPanel>
         </StackPanel>
     </Grid>
