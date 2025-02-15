@@ -114,7 +114,6 @@ namespace Hotel_Datenbanken
             {
                 reader.Read();
                 price += reader.GetInt32(0) * days;
-
             }
             reader.Close();
 

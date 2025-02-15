@@ -18,6 +18,9 @@ namespace Hotel_Datenbanken
         readonly Dictionary<string, int> additionals = [];
         DataTable selectedRoomsTable = new();
         DataView? roomView;
+        Gast_hinzufügen gast_Hinzufügen;
+        Window Gast_Hinzufügen_Window;
+        Homepage homepage;
         List<int> selectedRoomIds = new List<int> { };
         string? roomType, roomExtra;
 
@@ -70,7 +73,6 @@ namespace Hotel_Datenbanken
 
         private void Stack_Additional_Initialized(object sender, EventArgs e)
         {
-            Calculate.RechnungPrice(2, DB);
             StackPanel stackAdditional = (StackPanel)sender;
             string query = "SELECT Zusatzleistungs_ID, Zusatzleistung FROM zusatzleistung";
 
@@ -229,17 +231,27 @@ namespace Hotel_Datenbanken
             DP_End.IsEnabled = false;
         }
 
-        private void BtnGuest_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void BtnGuest_Click(object sender, RoutedEventArgs e)
         {
-
-            //Warte auf die funktion von John
-
+            gast_Hinzufügen = new Gast_hinzufügen(DB);
+            Gast_Hinzufügen_Window = new Window();
+            Gast_Hinzufügen_Window.Content = gast_Hinzufügen;
+            Gast_Hinzufügen_Window.Width = 800;
+            Gast_Hinzufügen_Window.Height = 500;
+            gast_Hinzufügen.WertGeändert += gast_hinzufügen_WertGeändert;
+            Gast_Hinzufügen_Window.Show();
         }
 
-        private void BtnConfirm_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void gast_hinzufügen_WertGeändert(object sender, int neuerWert)
+        {
+            buchung.GuestId = neuerWert;
+        }
+
+
+        private void BtnConfirm_Click(object sender, RoutedEventArgs e)
         {
             //--Test--
-            buchung.GuestId = 6;
+            //buchung.GuestId = 6;
             //--------
             string query = "SELECT g.Vorname, g.Nachname, g.Email, g.Telefonnummer, a.Straße, a.Hausnummer, a.PLZ, p.Ort " +
                 "FROM gast g " +
@@ -264,16 +276,16 @@ namespace Hotel_Datenbanken
             Lbl_End.Content = buchung.CheckOut.ToString("dd.MM.yyyy");
             TB_PayMethode.Text = buchung.PayMethode;
             
-            string additions = "";
+            List<string> additions = new();
             if(buchung.Additionals != null)
             {
                 foreach(int id in buchung.Additionals)
                 {
-                    additions += $"{additionals.FirstOrDefault(x => x.Value == id).Key}, ";
+                    additions.Add($"{additionals.FirstOrDefault(x => x.Value == id).Key}");
                 }
             }
-            additions = additions.Remove(additions.Length-2);
-            TB_Extra.Text = additions;
+            string tbAddi = string.Join(", ", additions);
+            TB_Extra.Text = tbAddi;
 
             ConfirmationScreen.Visibility = System.Windows.Visibility.Visible;
 
@@ -282,10 +294,11 @@ namespace Hotel_Datenbanken
         private void ValidateSelection()
         {
             bool dateIsChecked = DP_Start.SelectedDate != null && DP_End.SelectedDate != null;
-            bool roomIsChecked = selectedRoomIds.Count != 0;
+            bool roomsAreSelected = selectedRoomIds.Count != 0;
             bool payMethodIsChecked = (CB_PayMethode.SelectedItem as ComboBoxItem)?.Content.ToString()! != "Zahlungsart...";
+            bool gastIsSelected = buchung.GuestId != null;
 
-            if (dateIsChecked && roomIsChecked && payMethodIsChecked)
+            if (dateIsChecked && roomsAreSelected && payMethodIsChecked && gastIsSelected)
             {
                 buchung.CheckIn = DateOnly.FromDateTime(DP_Start.SelectedDate!.Value);
                 buchung.CheckOut = DateOnly.FromDateTime(DP_End.SelectedDate!.Value);
@@ -318,34 +331,37 @@ namespace Hotel_Datenbanken
                 foreach (int roomId in buchung.RoomNrs)
                 {
                     cmd.CommandText = "INSERT INTO buchung " +
-                                $"VALUES (NULL,'{buchung.CheckIn.ToString("yyyy-MM-dd")}','{buchung.CheckOut.ToString("yyyy-MM-dd")}',{roomId},{rechnungsId})";
+                                $"VALUES (NULL,'{buchung.CheckIn:yyyy-MM-dd}','{buchung.CheckOut:yyyy-MM-dd}',{roomId},{rechnungsId})";
                     cmd.ExecuteNonQuery();
                     int bookingId = (int)cmd.LastInsertedId;
 
                     foreach(int additionalId in buchung.Additionals)
                     {
                         cmd.CommandText = "INSERT INTO beinhaltet " +
-                                        $"VALUES ({bookingId},{additionalId},'{buchung.CheckIn.ToString("yyyy-MM-dd")}','{buchung.CheckOut.ToString("yyyy-MM-dd")}')";
+                                        $"VALUES (NULL, {bookingId},{additionalId},'{buchung.CheckIn:yyyy-MM-dd}','{buchung.CheckOut:yyyy-MM-dd}')";
                         cmd.ExecuteNonQuery();
                     }
 
                 }
 
                 transaction.Commit();
-                MessageBox.Show("Haf gefunzt");
+                MessageBox.Show("Erfolgreich");
+                homepage = new(DB,frame);
+                frame.Content = homepage;
+
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                throw new Exception(ex.Message);
+                MessageBox.Show("Etwas ist Schiefgelaufen:\n\r" + ex.Message);
             }
             
         }
 
-        private void Btn_Return_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void Btn_Return_Click(object sender, RoutedEventArgs e)
         {
 
-            ConfirmationScreen.Visibility = System.Windows.Visibility.Hidden;
+            ConfirmationScreen.Visibility = Visibility.Hidden;
 
         }
 
