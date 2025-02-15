@@ -40,7 +40,7 @@
                 <TextBox x:Name="Email" Text="Email"                     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged" Margin="0,0,5,0"/>
                 <TextBox x:Name="Telefonnummer" Text="Telefonnummer"     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_gast_TextChanged" Margin="0,0,5,0"/>
 
-                <Button x:Name="Adresse_reset" Content="X" Width="20" Click="Adresse_reset_Click" Margin="20,0,0,0"/>
+                <Button x:Name="Adresse_reset" Content="X" Width="20" Click="Adresse_reset_Click" Margin="90,0,0,0"/>
                 <TextBox x:Name="Straße" Text="Straße"                  MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged" Margin="0,0,5,0"/>
                 <TextBox x:Name="Hausnummer" Text="Hausnummer"          MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged" Margin="0,0,5,0"/>
                 <TextBox x:Name="PLZ" Text="PLZ"                        MinWidth="40" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_adresse_TextChanged" Margin="0,0,5,0"/>

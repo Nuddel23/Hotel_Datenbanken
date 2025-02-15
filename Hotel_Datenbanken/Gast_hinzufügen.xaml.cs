@@ -14,11 +14,13 @@ namespace Hotel_Datenbanken
         DataView DataView_adresse;
         int Gast_ID;
 
-        public Gast_hinzufügen(MySqlConnection DB, int Gast_ID)
+        // Ereignis, das den geänderten Wert zurückgibt
+        public event EventHandler<int> WertGeändert;
+
+        public Gast_hinzufügen(MySqlConnection DB)
         {
             InitializeComponent();
             this.DB = DB;
-            this.Gast_ID = Gast_ID;
             tabellenfüllen();
 
             DataView_gast = new DataView(GastTabelle);
@@ -26,11 +28,6 @@ namespace Hotel_Datenbanken
 
             tabelle2.ItemsSource = DataView_gast;
             tabelle.ItemsSource = DataView_adresse;
-        }
-
-        public int returngast()
-        {
-            return Gast_ID;
         }
 
         void tabellenfüllen()
@@ -203,24 +200,9 @@ namespace Hotel_Datenbanken
             Window.GetWindow(this)?.Close();
         }
 
-        // Ereignis, das den geänderten Wert zurückgibt
-        public event EventHandler<int> WertGeändert;
         private void Abbrechen_Click(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this)?.Close();
-        }
-
-        private void Bestätigen_Click(object sender, RoutedEventArgs e)
-        {
-            if (tabelle2.SelectedItem is DataRowView selectedRow)
-            {
-                WertGeändert?.Invoke(this, (int)selectedRow.Row[0]);
-                Window.GetWindow(this)?.Close();
-            }
-            else
-            {
-                MessageBox.Show("Es wurde kein Gast ausgewählt");
-            }
         }
 
         private void Adresse_reset_Click(object sender, RoutedEventArgs e)
