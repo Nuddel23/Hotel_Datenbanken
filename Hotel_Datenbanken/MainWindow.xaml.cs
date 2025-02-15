@@ -26,7 +26,7 @@ namespace Hotel_Datenbanken
             try
             {
                 DB.Open();
-                homepage = new Homepage(DB, Main);
+                homepage = new Homepage(DB);
                 Main.Content = homepage;
             }
             catch (Exception ex)
@@ -39,7 +39,7 @@ namespace Hotel_Datenbanken
 
         private void Homepage_Click(object sender, RoutedEventArgs e)
         {
-            homepage = new Homepage(DB, Main);
+            homepage = new Homepage(DB);
             Main.Content = homepage;
         }
 
@@ -51,7 +51,7 @@ namespace Hotel_Datenbanken
 
         private void Gäste_Click(object sender, RoutedEventArgs e)
         {
-            gäste = new Gäste(DB, Main);
+            gäste = new Gäste(DB);
             Main.Content = gäste;
         }
 
