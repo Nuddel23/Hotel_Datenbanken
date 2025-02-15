@@ -23,12 +23,10 @@ namespace Hotel_Datenbanken
     public partial class Homepage : Page
     {
         MySqlConnection DB;
-        Frame frame;
-        public Homepage(MySqlConnection DB, Frame frame)
+        public Homepage(MySqlConnection DB)
         {
             InitializeComponent();
             this.DB = DB;
-            this.frame = frame;
             FillTables();
         }
 
