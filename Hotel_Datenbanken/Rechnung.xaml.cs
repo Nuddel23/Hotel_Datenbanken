@@ -32,7 +32,7 @@ namespace Hotel_Datenbanken
 
             Rechnung_ID = 1;
 
-            Preise.Text = $" Kunde: {getGast(Rechnung_ID)}\r\n{Zimmmer(Rechnung_ID)} \r\n## Zusatzleistung preis = \r\n# Gesamt Preis = \r\nTabelle zusatzleisungen:";
+            Preise.Text = $" Kunde: {getGast(Rechnung_ID)}\r\n{Zimmmer(Rechnung_ID)}";
         }
 
         string getGast(int Rechnung_ID)
@@ -56,24 +56,57 @@ namespace Hotel_Datenbanken
         string Zimmmer(int Rechnung_ID)
         {
             string returnstring = "";
-            decimal Zimmergesamtpreis = 0;
-            MySqlCommand cmd = new MySqlCommand($"SELECT `rechnung`.`Rechnungs_ID`, `buchung`.`Check_in`, `buchung`.`Check_out`, `zimmer`.*\r\nFROM `rechnung` \r\n\tLEFT JOIN `buchung` ON `buchung`.`Rechnungs_ID` = `rechnung`.`Rechnungs_ID` \r\n\tLEFT JOIN `zimmer` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID`\r\nWHERE `rechnung`.`Rechnungs_ID` = '{Rechnung_ID}';", DB);
+            decimal Gesamtpreis = 0;
+            MySqlCommand cmd = new MySqlCommand($"SELECT `rechnung`.`Rechnungs_ID`, `buchung`.*, `zimmer`.*\r\nFROM `rechnung` \r\n\tLEFT JOIN `buchung` ON `buchung`.`Rechnungs_ID` = `rechnung`.`Rechnungs_ID` \r\n\tLEFT JOIN `zimmer` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID`\r\nWHERE `rechnung`.`Rechnungs_ID` = '{Rechnung_ID}';", DB);
+            DataTable Buchung_table = new DataTable();
 
             using (var adapter = new MySqlDataAdapter(cmd))
             {
-                DataTable table = new DataTable();
-                adapter.Fill(table);
-
-                foreach (DataRow row in table.Rows)
-                {
-                    decimal zimmerpreis = Zimmerpreis(row);
-                    int Tage = ((DateTime)row["Check_out"] - (DateTime)row["Check_in"]).Days;
-                    Zimmergesamtpreis += zimmerpreis * Tage;
-                    returnstring += $"Zimmer {row["Zimmernummer"]} = {zimmerpreis}\r\nTage = {Tage}\r\n";
-                }
+                adapter.Fill(Buchung_table);   
             }
 
-            return returnstring += $"\r\nZimmergesamtpreis = {Zimmergesamtpreis}";
+            foreach (DataRow row in Buchung_table.Rows)
+            {
+                decimal zimmerpreis = Zimmerpreis(row);
+                decimal zusatzleistungkosten = 0;
+                int Tage = ((DateTime)row["Check_out"] - (DateTime)row["Check_in"]).Days;
+
+                returnstring += $"Zimmer {row["Zimmernummer"]} = {zimmerpreis}\r\nTage = {Tage}\r\n";
+
+                returnstring += Zusatzleistung((int)row["Buchungs_ID"],ref zusatzleistungkosten);
+
+                returnstring += $"\r\nZimmerpreis = {(zimmerpreis * Tage) + zusatzleistungkosten}";
+
+                Gesamtpreis += (zimmerpreis * Tage) + zusatzleistungkosten;
+            }
+
+            return returnstring += $"\r\nGesamt Preis = {Gesamtpreis}";
+        }
+
+        string Zusatzleistung(int Buchungs_ID, ref decimal zusatzleistungkosten)
+        {
+            string returnstring = "";
+            decimal returnpreis = 0;
+
+            MySqlCommand cmd = new MySqlCommand($"SELECT `beinhaltet`.*, `zusatzleistung`.*\r\nFROM `beinhaltet` \r\n\tLEFT JOIN `zusatzleistung` ON `beinhaltet`.`Zusatzleistungs_ID` = `zusatzleistung`.`Zusatzleistungs_ID`\r\nWHERE `beinhaltet`.`Buchungs_ID` = '{Buchungs_ID}';", DB);
+            DataTable Zusatzleistung_table = new DataTable();
+
+            using (var adapter = new MySqlDataAdapter(cmd))
+            {
+                adapter.Fill(Zusatzleistung_table);
+            }
+
+            foreach (DataRow row in Zusatzleistung_table.Rows)
+            {
+                int typ_kosten = (int)row["Preis"];
+                int Tage = ((DateTime)row["End_Datum"] - (DateTime)row["Start_Datum"]).Days;
+                returnpreis += typ_kosten * Tage;
+                returnstring += $"Zusatzleistung {row["Zusatzleistung"]} = {typ_kosten}\r\nTage = {Tage}\r\n";
+            }
+            zusatzleistungkosten = returnpreis;
+
+            return returnstring += $"\r\nzusatleisung kosten = {returnpreis}";
+            // "Zusatzleistung {Zusatzleistung_typ} = {kosten}\r\nTage = {Tage}\r\nzusatleisung kosten = {gesamtkosten}";
         }
 
         decimal Zimmerpreis(DataRow Zimmer_row)
