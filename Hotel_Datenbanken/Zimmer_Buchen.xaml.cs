@@ -346,7 +346,7 @@ namespace Hotel_Datenbanken
 
                 transaction.Commit();
                 MessageBox.Show("Erfolgreich");
-                homepage = new(DB,frame);
+                homepage = new(DB);
                 frame.Content = homepage;
 
             }
