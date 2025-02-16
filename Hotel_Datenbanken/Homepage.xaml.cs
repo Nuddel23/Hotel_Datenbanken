@@ -28,81 +28,10 @@ namespace Hotel_Datenbanken
         {
             InitializeComponent();
             this.DB = DB;
-            //FillTables();
-            Filltabellen2();
+            Filltabellen();
         }
 
-        private void FillTables()
-        {
-            using (MySqlCommand cmd = new())
-            {
-                cmd.Connection = DB;
-                cmd.CommandText = "SELECT concat(g.Nachname, \", \", g.Vorname) AS Gast, z.Zimmernummer, z.Zimmertyp, b.Check_out " +
-                    "FROM buchung b " +
-                    "INNER JOIN zimmer z ON b.Zimmer_ID = z.Zimmer_ID " +
-                    "INNER JOIN rechnung r ON b.Rechnungs_ID = r.Rechnungs_ID " +
-                    "INNER JOIN gast g ON r.Gast_ID = g.Gast_ID " +
-                    $"WHERE b.Check_in = {DateTime.Today.ToString("yyyy-MM-dd")}";
-
-                using (MySqlDataAdapter adapter = new(cmd))
-                {
-                    DataTable fillTable = new();
-
-                    if (adapter != null)
-                    {
-                        adapter.Fill(fillTable);
-
-                        if(fillTable.Rows.Count > 0)
-                        {
-                            DG_CheckIns.ItemsSource = fillTable.DefaultView;
-                        }
-                        else
-                        {
-                            //muss noch
-                            return;
-                        }
-                    }
-                }
-
-                cmd.CommandText = "SELECT concat(g.Nachname, \", \", g.Vorname) AS Gast, z.Zimmernummer, z.Zimmertyp " +
-                    "FROM buchung b " +
-                    "INNER JOIN zimmer z ON b.Zimmer_ID = z.Zimmer_ID " +
-                    "INNER JOIN rechnung r ON b.Rechnungs_ID = r.Rechnungs_ID " +
-                    "INNER JOIN gast g ON r.Gast_ID = g.Gast_ID " +
-                    $"WHERE b.Check_out = {DateTime.Today.ToString("yyyy-MM-dd")}";
-
-                using (MySqlDataAdapter adapter = new(cmd))
-                {
-                    DataTable fillTable = new();
-
-                    if (adapter != null)
-                    {
-                        adapter.Fill(fillTable);
-
-                        DG_CheckOuts.ItemsSource = fillTable.DefaultView;
-                    }
-                }
-
-                //muss noch
-                cmd.CommandText = "SELECT `zimmer`.*, `buchung`.`Check_in`, `buchung`.`Check_out` FROM `zimmer` LEFT JOIN `buchung` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID` WHERE `Check_in` IS NULL AND `Check_out` IS NULL OR DATE(`buchung`.`Check_in`) > (NOW() + INTERVAL 7 DAY) AND DATE(`buchung`.`Check_out`) > (NOW() + INTERVAL 7 DAY) OR DATE(`buchung`.`Check_in`) < NOW() AND DATE(`buchung`.`Check_out`) < NOW() GROUP BY `zimmer`.`Zimmer_ID`;";
-
-                using (MySqlDataAdapter adapter = new(cmd))
-                {
-                    DataTable fillTable = new();
-
-                    if (adapter != null)
-                    {
-                        adapter.Fill(fillTable);
-
-                        DataView dv = new DataView(fillTable);
-                        DG_FreeRooms.ItemsSource = dv;
-                    }
-                }
-            }
-
-        }
-
-        void Filltabellen2()
+        void Filltabellen()
         {
             using (var command = new MySqlCommand($"SELECT concat(g.Nachname, \", \", g.Vorname) AS Gast, z.Zimmernummer, z.Zimmertyp, b.Check_out " +
                     "FROM buchung b " +

@@ -55,12 +55,6 @@ namespace Hotel_Datenbanken
             Main.Content = gäste;
         }
 
-        private void Buchungen_einsehen_Click(object sender, RoutedEventArgs e)
-        {
-            buchungen_einsehen = new Buchungen_einsehen(DB,26);
-            Main.Content = buchungen_einsehen;
-        }
-
         private void Rechnung_einsehen_Click(object sender, RoutedEventArgs e)
         {
             rechnung_einsehen = new Rechnung_einsehen(DB, Main);

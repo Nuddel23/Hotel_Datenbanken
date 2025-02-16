@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="assats\20241126_124803.jpg" />
     <None Remove="assats\Media.png" />
   </ItemGroup>
 
@@ -18,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="assats\20241126_124803.jpg" />
     <Resource Include="assats\Media.png" />
   </ItemGroup>
 

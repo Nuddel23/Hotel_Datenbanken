@@ -176,7 +176,7 @@
                     <Grid>
                         <!-- RadioButton-Hintergrund (Kreis) -->
                         <Border x:Name="BackgroundBorder"
-                            Width="18" Height="18"
+                            Width="15" Height="15"
                             Background="LightGray"
                             BorderBrush="Gray"
                             BorderThickness="2"

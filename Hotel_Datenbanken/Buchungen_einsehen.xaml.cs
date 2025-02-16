@@ -308,11 +308,10 @@ namespace Hotel_Datenbanken
 
         private void Rechnungen_anzeigen_Click(object sender, RoutedEventArgs e)
         {
-            rechnung = new Rechnung(DB, 1);
+            rechnung = new Rechnung(DB, Rechnungs_ID);
             Rechnung_window = new Window();
             Rechnung_window.Content = rechnung;
-            Rechnung_window.Width = 820;
-            Rechnung_window.Height = 500;
+            Rechnung_window.Width = 400;
             Rechnung_window.Show();
         }
 

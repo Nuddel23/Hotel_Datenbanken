@@ -5,10 +5,39 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Hotel_Datenbanken"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="800" d:DesignWidth="400"
       Title="Rechnung">
 
-    <Grid>
-        <TextBlock Name="Preise"/>
+    <Grid Background="White">
+        <TextBlock x:Name="Preise" Visibility="Hidden"/>
+        <Border BorderBrush="DarkSlateBlue" BorderThickness="2" CornerRadius="5" Padding="20" Margin="20">
+            <StackPanel>
+                
+                <TextBlock Text="Rechnung" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,20" Foreground="Black"/>
+
+                <TextBlock Text="Gast:" FontWeight="Bold" Foreground="Black"/>
+                <TextBlock x:Name="TxtGast" Margin="0,0,0,10" Foreground="Black"/>
+
+                <Separator Background="DarkSlateBlue" Margin="0,0,0,10"/>
+                <TextBlock Text="Zimmerliste:" FontWeight="Bold" Foreground="Black"/>
+                <Separator Background="DarkSlateBlue" Margin="0,0,0,10"/>
+                <StackPanel x:Name="Zimmerstack" Margin="10,0,0,0"/>
+
+                <Separator Background="DarkSlateBlue" Margin="0,10,0,0"/>
+                <TextBlock Text="Gesamtkosten:" FontWeight="Bold" Margin="0,10,0,0" Foreground="Black"/>
+                <TextBlock x:Name="TxtGesamtpreis" FontSize="16" FontWeight="Bold" Foreground="Black"/>
+                <Separator Background="DarkSlateBlue" Margin="0,20,0,10"/>
+
+
+                <StackPanel Margin="0,20,0,0">
+                    <TextBlock Text="Hotel Willeke" FontWeight="Bold" HorizontalAlignment="Center" Foreground="Black"/>
+                    <TextBlock Text="Münster oder so" HorizontalAlignment="Center" Foreground="Black"/>
+                    <TextBlock Text="Tel: 030/67349876 | Fax: wer benutzt den scheiß noch" HorizontalAlignment="Center" Foreground="Black"/>
+                    <TextBlock Text="Email: fickdich.de | Web: Nicht-von-Lukas.de" HorizontalAlignment="Center" Foreground="Black"/>
+                </StackPanel>
+
+                
+            </StackPanel>
+        </Border>
     </Grid>
 </Page>

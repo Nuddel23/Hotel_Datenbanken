@@ -8,28 +8,6 @@
       d:DesignHeight="520" d:DesignWidth="820"
       Title="Gast_hinzufügen">
 
-    <Page.Resources>
-        <Style TargetType="DataGrid">
-            <Setter Property="RowBackground" Value="#F2F2F2"/>
-            <Setter Property="AlternatingRowBackground" Value="#E6E6E6"/>
-            <Setter Property="BorderBrush" Value="#CCCCCC"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="RowHeight" Value="30"/>
-            <Setter Property="ColumnHeaderStyle">
-                <Setter.Value>
-                    <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="Background" Value="DarkSlateBlue"/>
-                        <Setter Property="Foreground" Value="White"/>
-                        <Setter Property="FontWeight" Value="Bold"/>
-                        <Setter Property="Padding" Value="5"/>
-                        <Setter Property="BorderBrush" Value="White"/>
-                        <Setter Property="BorderThickness" Value="0.5"/>
-                    </Style>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Page.Resources>
-
     <Grid Margin="0,0,0,0" Width="800" Height="500">
         <Grid Margin="20,0,20,20">
             <Label Content="Gast:" Margin="0,15"/>
