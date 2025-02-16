@@ -1,0 +1,222 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style TargetType="DataGrid">
+        <Setter Property="RowBackground" Value="#F2F2F2"/>
+        <Setter Property="AlternatingRowBackground" Value="#E6E6E6"/>
+        <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="RowHeight" Value="30"/>
+        <Setter Property="ColumnHeaderStyle">
+            <Setter.Value>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="DarkSlateBlue"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Padding" Value="5"/>
+                    <Setter Property="BorderBrush" Value="White"/>
+                    <Setter Property="BorderThickness" Value="0.5"/>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="CheckBox">
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid>
+                        <!-- Hintergrund -->
+                        <Border x:Name="BackgroundBorder"
+                                Height="20"
+                                Background="LightGray"
+                                BorderBrush="Gray"
+                                BorderThickness="2"
+                                CornerRadius="2">
+
+                        </Border>
+                        <!-- Check-Marke -->
+                        <Path x:Name="CheckMark"
+                                Data="M6,12 L10,16 L18,6"
+                                Stroke="White"
+                                StrokeThickness="2"
+                                StrokeEndLineCap="Round"
+                                StrokeStartLineCap="Round"
+                                Opacity="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+
+                        </Path>
+
+                        <!-- Content (Text oder andere Elemente) -->
+                        <ContentPresenter x:Name="Content" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Center" 
+                                Margin="5,0,0,0"
+                                >
+                        </ContentPresenter>
+                    </Grid>
+
+                    <!-- Trigger für Hover und Checked -->
+                    <ControlTemplate.Triggers>
+                        <!-- Hover-Effekt -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="BackgroundBorder" Property="Background" Value="DarkGray" />
+                            <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="DarkSlateGray"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+
+                        <!-- Checked-Effekt -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="BackgroundBorder" Property="Background" Value="DarkSlateBlue"/>
+                            <Setter TargetName="CheckMark" Property="Opacity" Value="1"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button">
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Cursor" Value="Hand"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <!-- Hintergrund des Buttons -->
+                        <Border x:Name="BackgroundBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="2">
+
+                            <ContentPresenter x:Name="Content"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          />
+                        </Border>
+                    </Grid>
+
+                    <!-- Trigger für Hover und Klick -->
+                    <ControlTemplate.Triggers>
+                        <!-- Hover-Effekt -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="BackgroundBorder" Property="Background" Value="DarkGray"/>
+                            <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="DarkSlateGray"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+
+                        <!-- Klick-Effekt -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="BackgroundBorder" Property="Background" Value="DarkSlateBlue"/>
+                            <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="Black"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="TextBox">
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="FontSize" Value="12"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border x:Name="Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="2">
+
+
+                        <ScrollViewer x:Name="PART_ContentHost" 
+                                  VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Trigger für Hover und Fokus -->
+                    <ControlTemplate.Triggers>
+                        <!-- Hover-Effekt -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="LightGray"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="DarkSlateGray"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+
+                        <!-- Fokus-Effekt (wenn der User in die TextBox klickt) -->
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="White"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="DarkSlateBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="RadioButton">
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid>
+                        <!-- RadioButton-Hintergrund (Kreis) -->
+                        <Border x:Name="BackgroundBorder"
+                            Width="18" Height="18"
+                            Background="LightGray"
+                            BorderBrush="Gray"
+                            BorderThickness="2"
+                            CornerRadius="10"
+                            HorizontalAlignment="Left">
+
+                            <!-- Runde Form -->
+                        </Border>
+
+                        <!-- Content (Text oder andere Elemente) -->
+                        <ContentPresenter x:Name="Content"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Center"
+                                      />
+                    </Grid>
+
+                    <!-- Trigger für Hover und Checked -->
+                    <ControlTemplate.Triggers>
+                        <!-- Hover-Effekt -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="BackgroundBorder" Property="Background" Value="DarkGray"/>
+                            <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="DarkSlateGray"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+
+                        <!-- Checked-Effekt -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="BackgroundBorder" Property="Background" Value="DarkSlateBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+
+                        <!-- Disabled-Effekt -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="BackgroundBorder" Property="Background" Value="White"/>
+                            <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="LightGray"/>
+                            <Setter Property="Foreground" Value="Gray"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -84,7 +84,7 @@ namespace Hotel_Datenbanken
                 CBAdditional.Checked += CB_Additional_Checked;
                 CBAdditional.Name = "CB_" + reader.GetInt32(0);
                 CBAdditional.Content = reader.GetString(1); 
-                CBAdditional.Height = 30;
+                CBAdditional.Height = 25;
                 stackAdditional.Children.Add(CBAdditional);
 
                 additionals.Add(reader.GetString(1), reader.GetInt32(0));

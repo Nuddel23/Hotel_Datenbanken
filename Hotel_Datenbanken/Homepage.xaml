@@ -39,16 +39,16 @@
                         Hotel Willeke
                     </TextBlock.Text>
                 </TextBlock>
-                <Image HorizontalAlignment="Left" Source="/assats/Media.png" Width="600" Height="340" />
+                <Image HorizontalAlignment="Left" Source="/assats/Media.png" Width="500" Height="340" />
                 <Label Width="550" Content="Freie Zimmer" FontSize="15" Margin="0,30,0,0"/>
-                <DataGrid x:Name="DG_FreeRooms" Height="150" Width="550" />
+                <DataGrid Name="DG_FreeRooms" Height="150" Width="520" IsReadOnly="True"/>
             </StackPanel>
             <StackPanel Margin="200,50,0,0">
                 <Label Content="Heutige Agenda" FontSize="20" FontWeight="Bold"/>
                 <Label  Content="Anreisen" FontSize="15"/>
-                <DataGrid x:Name="DG_CheckIns" Height="220" Width="350" />
+                <DataGrid Name="DG_CheckIns" Height="230" Width="390" IsReadOnly="True"/>
                 <Label Content="Abreisen" FontSize="15" Margin="0,5,0,0"/>
-                <DataGrid x:Name="DG_CheckOuts" Height="220" Width="350"/>
+                <DataGrid Name="DG_CheckOuts" Height="230" Width="390" IsReadOnly="True"/>
             </StackPanel>
         </StackPanel>
 
