@@ -86,7 +86,7 @@ namespace Hotel_Datenbanken
 
                 Gesamtkosten += zimmerpreis * ZimmerTage + zusatzleistungkosten;
             }
-            TxtGesamtpreis.Text = Convert.ToString(Gesamtkosten) + "€";
+            TxtGesamtpreis.Text = $"{Gesamtkosten}€";
 
         }
 

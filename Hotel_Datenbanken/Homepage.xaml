@@ -41,14 +41,14 @@
                 </TextBlock>
                 <Image HorizontalAlignment="Left" Source="/assats/20241126_124803.jpg" Width="500" Height="340" />
                 <Label Width="550" Content="Freie Zimmer" FontSize="15" Margin="0,30,0,0"/>
-                <DataGrid Name="DG_FreeRooms" Height="150" Width="520" IsReadOnly="True"/>
+                <DataGrid Name="DG_FreeRooms" SelectionMode="Single" HeadersVisibility="Column" ColumnWidth="*" Height="150" Width="520" IsReadOnly="True"/>
             </StackPanel>
             <StackPanel Margin="200,50,0,0">
                 <Label Content="Heutige Agenda" FontSize="20" FontWeight="Bold"/>
                 <Label  Content="Anreisen" FontSize="15"/>
-                <DataGrid Name="DG_CheckIns" Height="230" Width="390" IsReadOnly="True"/>
+                <DataGrid Name="DG_CheckIns" SelectionMode="Single" HeadersVisibility="Column" ColumnWidth="*" Height="230" Width="390" IsReadOnly="True"/>
                 <Label Content="Abreisen" FontSize="15" Margin="0,5,0,0"/>
-                <DataGrid Name="DG_CheckOuts" Height="230" Width="390" IsReadOnly="True"/>
+                <DataGrid Name="DG_CheckOuts" SelectionMode="Single" HeadersVisibility="Column"  ColumnWidth="*" Height="230" Width="390" IsReadOnly="True"/>
             </StackPanel>
         </StackPanel>
 

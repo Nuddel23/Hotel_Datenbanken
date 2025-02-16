@@ -35,6 +35,6 @@
 
             </StackPanel>
         </Grid>
-        <DataGrid Name="tabelle" Margin="5,80,5,5" Height="500" IsTextSearchEnabled="True" IsReadOnly="True" CellEditEnding="tabelle_CellEditEnding" SelectionChanged="tabelle_SelectionChanged" />
+        <DataGrid Name="tabelle" Margin="5,80,5,5" Height="500" SelectionMode="Single" HeadersVisibility="Column" ColumnWidth="*" IsTextSearchEnabled="True" IsReadOnly="True" CellEditEnding="tabelle_CellEditEnding" SelectionChanged="tabelle_SelectionChanged" />
     </Grid>
 </Page>

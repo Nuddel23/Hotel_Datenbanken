@@ -59,11 +59,11 @@
                 <DatePicker x:Name="DP_End" SelectedDateChanged="DateChanged"/>
             </StackPanel>
         </GroupBox>
+        <Button Name="Rechnung_anzeigen" HorizontalAlignment="Left" Margin="10,300,0,0" Width="150" Height="40" Content="Quitung anzeigen" Click="Rechnungen_anzeigen_Click" />
 
-        <StackPanel Margin="100,30,0,0" Width="1100">
+        <StackPanel Margin="100,60,0,0" Width="1100">
             <StackPanel>
-                <Button Name="Rechnung_anzeigen" Content="Quitung anzeigen" HorizontalAlignment="Left" Click="Rechnungen_anzeigen_Click" Width="120"/>
-                <DataGrid Name="DG_Buchungen" Margin="0,10,0,0" Width="1000" Height="250" SelectionMode="Single" HeadersVisibility="Column" ColumnWidth="*" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="BuchungTabelle_SelectionChanged"/>
+                <DataGrid Name="DG_Buchungen"  Width="1000" Height="250" SelectionMode="Single" HeadersVisibility="Column" ColumnWidth="*" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="BuchungTabelle_SelectionChanged"/>
             </StackPanel>
             <Grid Margin="0,20,0,0" Width="950">
                 <Rectangle Height="300" Fill="AliceBlue"/>
@@ -95,7 +95,7 @@
                                 <Label Content="Von:"/>
                                 <DatePicker x:Name="DP_NewAddStart" Margin="0,0,0,10" SelectedDateChanged="DP_NewSelectedDateChanged"/>
                                 <Label Content="Bis:"/>
-                                <DatePicker x:Name="DP_NewAddEnd" Margin="0,0,0,30" SelectedDateChanged="DP_NewSelectedDateChanged"/>
+                                <DatePicker x:Name="DP_NewAddEnd" Margin="0,0,0,30"  SelectedDateChanged="DP_NewSelectedDateChanged"/>
                                 <Button x:Name="Btn_New" Content="Hinzufügen" IsEnabled="False" Click="Btn_New_Click"/>
                             </StackPanel>
                         </GroupBox>
