@@ -1,21 +1,11 @@
 ﻿using MySqlConnector;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Linq;
+using static Hotel_Datenbanken.Structure;
+
 
 namespace Hotel_Datenbanken
 {
@@ -25,9 +15,14 @@ namespace Hotel_Datenbanken
     public partial class Buchungen_einsehen : Page
     {
         MySqlConnection DB;
-        int Rechnung_ID;
+        int Rechnungs_ID;
+        int? BZ_Id;
+        int? buchungsId;
         DataTable GastTabelle_table = new DataTable();
         DataTable BuchungTabelle_table = new DataTable();
+        readonly Dictionary<string, int> additionals = [];
+        DateTime buchungCheckIn;
+        DateTime buchungCheckOut;
         DataView DataView_gast;
         DataView DataView_buchung;
         Window Rechnung_window;
@@ -35,46 +30,37 @@ namespace Hotel_Datenbanken
 
         string[] Buchungfiltertypen = { "Zimmertyp", "Check_out", "Check_in", "Balkon", "Terrasse", "Aussicht_Strasse", "Zimmernummer" };
         string[] Buchungfilter = new string[7];
-        public Buchungen_einsehen(MySqlConnection DB, int Rechnung_ID)
+        public Buchungen_einsehen(MySqlConnection DB, int Rechnungs_ID)
         {
-            InitializeComponent();
             this.DB = DB;
-            this.Rechnung_ID = Rechnung_ID;
-            tabellenfüllen(null, null);
+            this.Rechnungs_ID = Rechnungs_ID;
+            InitializeComponent();
+            CB_Placeholder.IsSelected = true;
+            tabellenfüllen();
         }
 
-        void tabellenfüllen(int? buchung_ID, int? gast_ID)
+        void tabellenfüllen()
         {
-            MySqlCommand gast_command = new MySqlCommand($"SELECT `gast`.`Vorname`, `gast`.`Nachname`, `gast`.`Email`, `gast`.`Telefonnummer`, `gast`.`Gast_ID`\r\nFROM `gast`;", DB);
-            MySqlCommand buchung_command = new MySqlCommand($"SELECT `zimmer`.`Zimmernummer`, `buchung`.`Check_in`, `buchung`.`Check_out`, `zimmer`.`Zimmertyp`, `zimmer`.`Etage`, `zimmer`.`Balkon`, `zimmer`.`Terrasse`, `zimmer`.`Aussicht_Strasse`, `buchung`.`Buchungs_ID`\r\nFROM `zimmer` \r\n\tINNER JOIN `buchung` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID`;", DB);
-
-            if (gast_ID != null)
+            using (MySqlCommand cmd = new())
             {
-                buchung_command = new MySqlCommand($"SELECT `zimmer`.`Zimmernummer`, `buchung`.`Check_in`, `buchung`.`Check_out`, `zimmer`.`Zimmertyp`, `zimmer`.`Etage`, `zimmer`.`Balkon`, `zimmer`.`Terrasse`, `zimmer`.`Aussicht_Strasse`, `buchung_hat_gast`.* \r\nFROM `zimmer` \r\n\tINNER JOIN `buchung` ON `buchung`.`Zimmer_ID` = `zimmer`.`Zimmer_ID` \r\n\tLEFT JOIN `buchung_hat_gast` ON `buchung_hat_gast`.`Buchungs_ID` = `buchung`.`Buchungs_ID`\r\nWHERE `buchung_hat_gast`.`Gast_ID` = '{gast_ID}';", DB);
+                cmd.Connection = DB;
+                cmd.CommandText = "SELECT  b.Buchungs_ID, z.Zimmernummer, DATE_FORMAT(b.Check_In, '%d.%m.%Y') AS Start, DATE_FORMAT(b.Check_Out, '%d.%m.%Y') AS Ende, z.Zimmertyp, z.Etage, z.Balkon, z.Terrasse, z.Aussicht_Strasse " +
+                "FROM zimmer z " +
+                "INNER JOIN buchung b ON b.Zimmer_ID = z.Zimmer_ID " +
+                $"WHERE b.Rechnungs_ID = {Rechnungs_ID}";
+
+                Debug.Print(cmd.CommandText);
+                using (MySqlDataAdapter adapter = new())
+                {
+                    BuchungTabelle_table = new DataTable();
+                    adapter.SelectCommand = cmd;
+
+                    adapter.Fill(BuchungTabelle_table);
+                    DataView_buchung = new DataView(BuchungTabelle_table);
+                    DG_Buchungen.ItemsSource = DataView_buchung;
+                    DG_format(DG_Buchungen);
+                }
             }
-            if (buchung_ID != null)
-            {
-                gast_command = new MySqlCommand($"SELECT `gast`.`Vorname`, `gast`.`Nachname`, `gast`.`Email`, `gast`.`Telefonnummer`, `buchung_hat_gast`.* \r\nFROM `gast` \r\n\tLEFT JOIN `buchung_hat_gast` ON `buchung_hat_gast`.`Gast_ID` = `gast`.`Gast_ID`\r\nWHERE `buchung_hat_gast`.`Buchungs_ID` = '{buchung_ID}';", DB);
-            }
-
-
-            using (var adapter = new MySqlDataAdapter(gast_command))
-            {
-                GastTabelle_table = new DataTable();
-                adapter.Fill(GastTabelle_table);
-                DataView_gast = new DataView(GastTabelle_table);
-                GastTabelle.ItemsSource = DataView_gast;
-            }
-
-
-            using (var adapter = new MySqlDataAdapter(buchung_command))
-            {
-                BuchungTabelle_table = new DataTable();
-                adapter.Fill(BuchungTabelle_table);
-                DataView_buchung = new DataView(BuchungTabelle_table);
-                BuchungTabelle.ItemsSource = DataView_buchung;
-            }
-
         }
 
         private void Filter_LostFocus(object sender, RoutedEventArgs e)
@@ -268,33 +254,56 @@ namespace Hotel_Datenbanken
             }
             Buchung_Filtern();
         }
+
         private void BuchungTabelle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (BuchungTabelle.SelectedItem is DataRowView selectedRow)
+            if (DG_Buchungen.SelectedItem is DataRowView selectedRow)
             {
-                tabellenfüllen((int)selectedRow.Row[selectedRow.Row.ItemArray.Length - 1], null);
-                if (BuchungTabelle.IsFocused == false)
-                {
-                    BuchungTabelle.Focus();
-                }
+                buchungsId = (int)selectedRow.Row[0];
+                buchungCheckIn = DateTime.Parse(selectedRow.Row[2].ToString()!);
+                buchungCheckOut = DateTime.Parse(selectedRow.Row[3].ToString()!);
+                GetZusatz();
+                GB_New.IsEnabled = true;
             }
         }
 
-        private void GastTabelle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void GetZusatz()
         {
-            if (GastTabelle.SelectedItem is DataRowView selectedRow)
+
+            using (MySqlCommand cmd = new())
             {
-                tabellenfüllen(null, (int)selectedRow.Row[selectedRow.Row.ItemArray.Length -1]);
-                if (GastTabelle.IsFocused == false)
+                cmd.Connection = DB;
+                cmd.CommandText = "SELECT b.BZ_ID, z.Zusatzleistung AS Leistung, Date_Format(b.Start_Datum, '%d.%m.%Y') AS Von, Date_Format(b.End_Datum, '%d.%m.%Y') AS Bis " +
+                    "FROM beinhaltet b " +
+                    "INNER JOIN zusatzleistung z ON b.Zusatzleistungs_ID = z.Zusatzleistungs_ID " +
+                    $"WHERE b.Buchungs_ID = {buchungsId}";
+
+
+                using (MySqlDataAdapter adapter = new())
                 {
-                    GastTabelle.Focus();
+                    DataTable dt = new DataTable();
+                    adapter.SelectCommand = cmd;
+
+                    adapter.Fill(dt);
+                    DG_Additionals.ItemsSource = dt.DefaultView;
+                    DG_format(DG_Additionals);
                 }
+
+                DP_AddStart.DisplayDateStart = buchungCheckIn;
+                DP_AddStart.DisplayDateEnd = buchungCheckOut;
+                DP_AddEnd.DisplayDateStart = DateTime.Now;
+                DP_AddEnd.DisplayDateEnd = buchungCheckOut;
+
+                DP_NewAddStart.DisplayDateStart = buchungCheckIn;
+                DP_NewAddStart.DisplayDateEnd = buchungCheckOut;
+                DP_NewAddEnd.DisplayDateStart = buchungCheckIn;
+                DP_NewAddEnd.DisplayDateEnd = buchungCheckOut;
             }
         }
 
         private void Tabelle_LostFocus(object sender, RoutedEventArgs e)
         {
-            tabellenfüllen(null, null);
+            tabellenfüllen();
         }
 
         private void Rechnungen_anzeigen_Click(object sender, RoutedEventArgs e)
@@ -305,6 +314,254 @@ namespace Hotel_Datenbanken
             Rechnung_window.Width = 820;
             Rechnung_window.Height = 500;
             Rechnung_window.Show();
+        }
+
+        private void Stack_Additional_Initialized(object sender, EventArgs e)
+        {
+            StackPanel stackAdditional = (StackPanel)sender;
+
+            using (MySqlCommand cmd = new())
+            {
+                cmd.Connection = DB;
+                cmd.CommandText = "SELECT Zusatzleistungs_ID, Zusatzleistung FROM zusatzleistung";
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while(reader.Read())
+                    {
+                        CheckBox CBAdditional = new();
+                        CBAdditional.Checked += CB_Additional_Checked;
+                        CBAdditional.Name = "CB_" + reader.GetInt32(0);
+                        CBAdditional.Content = reader.GetString(1);
+                        CBAdditional.Height = 30;
+                        stackAdditional.Children.Add(CBAdditional);
+
+                        if (!additionals.ContainsKey(reader.GetString(1)))
+                        {
+                            additionals.Add(reader.GetString(1), reader.GetInt32(0));
+                        }
+                    }
+                }
+
+            }
+        }
+
+        private void DG_format(DataGrid toFormat, int anzColoumns = 1)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (toFormat.Columns.Count > 0)
+                {
+                    for (int i = 0; i < anzColoumns; i++)
+                    {
+                        toFormat.Columns[i].Visibility = Visibility.Collapsed;
+                    }
+                }
+            }), System.Windows.Threading.DispatcherPriority.Render);
+        }
+
+        private void CB_Additional_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //CheckBox[] selectedCBAdditionals = Stack_Additional.Children.OfType<CheckBox>()
+            //    .Where(cb => cb.IsChecked == true)
+            //    .ToArray();
+
+            //List<int> selectdedAdditional = [];
+
+            //foreach (CheckBox cb in selectedCBAdditionals)
+            //{
+            //    if (additionals.TryGetValue(cb.Content.ToString()!, out int id))
+            //    {
+            //        selectdedAdditional.Add(id);
+            //    }
+            //}
+            //buchung.Additionals = selectdedAdditional;
+        }
+
+        private void DG_Additionals_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(DG_Additionals.SelectedItem is DataRowView selectedRow)
+            {
+                BZ_Id = (int)selectedRow.Row[0];
+                DP_AddStart.SelectedDate = DateTime.Parse(selectedRow.Row[2].ToString()!);
+                if (buchungCheckIn >= DateTime.Now)
+                { 
+                    DP_AddStart.DisplayDateStart = buchungCheckIn;
+                    DP_AddEnd.DisplayDateStart = buchungCheckIn;
+                }
+                else
+                {
+                    DP_AddStart.DisplayDateStart = DateTime.Now;
+                }
+
+                DP_AddEnd.SelectedDate = DateTime.Parse(selectedRow.Row[3].ToString()!);
+
+                Btn_Save.IsEnabled = false;
+            }
+        }
+
+        private void DP_AddStart_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DP_AddEnd.DisplayDateStart = DP_AddStart.SelectedDate;
+            if (DP_AddEnd.SelectedDate == null || DP_AddEnd.SelectedDate < DP_AddStart.SelectedDate)
+            {
+                DP_AddEnd.SelectedDate = DP_AddStart.SelectedDate;
+                DP_AddEnd.IsEnabled = true;
+            }
+            if (DP_AddStart.SelectedDate == null)
+            {
+                DP_AddEnd.SelectedDate = null;
+                DP_AddEnd.IsEnabled = false;
+            }
+            Validate();
+        }
+
+        private void Validate()
+        {
+            if (DG_Additionals.SelectedItem is DataRowView selectedRow)
+            {
+                bool startChanged = DateTime.Parse(selectedRow.Row[2].ToString()!) != DP_AddStart.SelectedDate;
+                bool endChanged = DateTime.Parse(selectedRow.Row[3].ToString()!) != DP_AddEnd.SelectedDate;
+
+                if((startChanged || endChanged) && BZ_Id != null)
+                {
+                    Btn_Save.IsEnabled = true;
+                }
+                else
+                {
+                    Btn_Save.IsEnabled = false;
+                }
+            }
+        }
+        private void DP_AddEnd_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Validate();
+        }
+
+        private void Btn_Save_Click(object sender, RoutedEventArgs e)
+        {
+            MySqlTransaction transaction = DB.BeginTransaction();
+
+            using (MySqlCommand cmd = new())
+            {
+                try
+                {
+                    cmd.Connection = DB;
+                    cmd.Transaction = transaction;
+
+                    cmd.CommandText = 
+                        $"UPDATE beinhaltet b SET b.Start_Datum = '{DP_AddStart.SelectedDate:yyyy-MM-dd}', End_Datum = '{DP_AddEnd.SelectedDate:yyyy-MM-dd}' " +
+                        $"WHERE b.BZ_ID = {BZ_Id}";
+                    Debug.Print(cmd.CommandText);
+                    cmd.ExecuteNonQuery();
+                    transaction.Commit();
+                    GetZusatz();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    MessageBox.Show("Etwas ist Schiefgelaufen:\n\r\r" + ex.Message);
+                }
+            }
+        }
+
+        private void CB_Zusatzleistung_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ValidateNew();
+        }
+        private void DP_NewSelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(sender == DP_NewAddStart)
+            {
+                DP_NewAddEnd.DisplayDateStart = DP_NewAddStart.SelectedDate;
+                if (DP_NewAddEnd.SelectedDate == null || DP_NewAddEnd.SelectedDate < DP_NewAddStart.SelectedDate)
+                {
+                    DP_NewAddEnd.SelectedDate = DP_NewAddStart.SelectedDate;
+                    DP_NewAddEnd.IsEnabled = true;
+                }
+                if (DP_NewAddStart.SelectedDate == null)
+                {
+                    DP_NewAddEnd.SelectedDate = null;
+                    DP_NewAddEnd.IsEnabled = false;
+                }
+            }
+            ValidateNew();
+        }
+
+        private void ValidateNew()
+        {
+            bool dateIsChecked = DP_NewAddStart.SelectedDate != null && DP_NewAddEnd.SelectedDate != null;
+            bool additionalIsSelected = (CB_Zusatzleistung.SelectedItem as ComboBoxItem)?.Content.ToString()! != "Zusatzleistung...";
+
+            if (dateIsChecked && additionalIsSelected)
+            {
+                Btn_New.IsEnabled = true;
+            }
+            else
+            {
+                Btn_New.IsEnabled = false;
+            }
+        }
+
+        private void Btn_New_Click(object sender, RoutedEventArgs e)
+        {
+            DateTime? startDate = DP_NewAddStart.SelectedDate;
+            DateTime? endDate = DP_NewAddEnd.SelectedDate;
+            string zusatzleistung = (CB_Zusatzleistung.SelectedItem as ComboBoxItem)?.Content.ToString()!;
+            int zusatzleistungId = 0;
+            if(additionals.TryGetValue(zusatzleistung, out int id))
+            {
+                zusatzleistungId = id;
+            }
+
+            using (MySqlCommand cmd = new())
+            {
+                cmd.Connection = DB;
+                
+                cmd.CommandText = 
+                    "SELECT b.BZ_ID " +
+                    "FROM beinhaltet b " +
+                    $"WHERE b.Zusatzleistungs_ID = {zusatzleistungId} " +
+                    $"AND b.Buchungs_ID = {buchungsId} " +
+                    "AND b.BZ_ID " +
+                    "AND NOT( " +
+                    $"b.End_Datum < '{startDate:yyyy-MM-dd}' " +
+                    $"OR b.Start_Datum > '{endDate:yyyy-MM-dd}')";
+
+                Debug.Print(cmd.CommandText);
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if(reader.HasRows)
+                    {
+                        MessageBox.Show($"In dem Zeitraum liegt bereits eine buchung von {zusatzleistung} vor.");
+                        return;
+                    }
+                    else
+                    {
+                        reader.Close();
+                        try
+                        {
+                            cmd.CommandText =
+                                    "INSERT INTO beinhaltet " +
+                                    $"VALUES (NULL, {buchungsId},{zusatzleistungId},'{startDate:yyyy-MM-dd}','{endDate:yyyy-MM-dd}')";
+                            cmd.ExecuteNonQuery();
+
+                            MessageBox.Show($"{zusatzleistung} vom {startDate:dd.MM.yyyy} bis {endDate:dd.MM.yyyy} hinzugefügt.");
+                            GetZusatz();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Etwas ist Schiefgelaufen:\n\r\r" + ex.Message);
+                        }
+
+
+                    }
+                }
+
+            }
+
+
         }
     }
 }

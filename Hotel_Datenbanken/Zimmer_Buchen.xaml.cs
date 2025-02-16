@@ -182,10 +182,10 @@ namespace Hotel_Datenbanken
                 sqlPrompt += " " +
                     "AND Z.Zimmer_ID " +
                     "Not IN( " +
-                    "SELECT B.Zimmer_ID " +
-                    "FROM buchung B " +
-                    "WHERE B.Check_in <= CAST(\"" + DP_End.SelectedDate!.Value.ToString("yyyy-MM-dd") + "\" AS DATE) " +
-                    "AND B.Check_out > CAST(\"" + DP_Start.SelectedDate.Value.ToString("yyyy-MM-dd") + "\" AS DATE)) ";
+                        "SELECT B.Zimmer_ID " +
+                        "FROM buchung B " +
+                        $"WHERE B.Check_in <= CAST('{DP_End.SelectedDate!.Value:yyyy-MM-dd}' AS DATE) " +
+                        $"AND B.Check_out > CAST('{DP_Start.SelectedDate.Value:yyyy-MM-dd}' AS DATE)) ";
             }
 
             sqlPrompt += " GROUP BY Z.Zimmer_ID";
@@ -400,7 +400,6 @@ namespace Hotel_Datenbanken
             if (Btn_Confirm != null)
             {
                 ValidateSelection();
-
             }
         }
 

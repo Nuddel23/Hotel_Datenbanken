@@ -11,6 +11,7 @@ namespace Hotel_Datenbanken
     public partial class Rechnung_einsehen : Page
     {
         MySqlConnection DB;
+        readonly Frame frame;
         DataTable GastTabelle_table = new DataTable();
         DataTable BuchungTabelle_table = new DataTable();
         DataView? dataViewGast;
@@ -19,10 +20,11 @@ namespace Hotel_Datenbanken
         string[] Buchungfiltertypen = { "Zimmertyp", "Check_out", "Check_in", "Balkon", "Terrasse", "Aussicht_Strasse", "Zimmernummer" };
         string[] Buchungfilter = new string[7];
 
-        public Rechnung_einsehen(MySqlConnection DB)
+        public Rechnung_einsehen(MySqlConnection DB, Frame frame)
         {
             InitializeComponent();
             this.DB = DB;
+            this.frame = frame;
             DP_Date.SelectedDate = DateTime.Now;
             GetRechnungsGast();
         }
@@ -252,6 +254,7 @@ namespace Hotel_Datenbanken
             if (DG_Rechnungen.SelectedItem is DataRowView selectedRow)
             { 
                 Buchungen_einsehen buchungen_Einsehen = new(DB, (int)selectedRow.Row[0]);
+                frame.Content = buchungen_Einsehen;
             }
         }
     }

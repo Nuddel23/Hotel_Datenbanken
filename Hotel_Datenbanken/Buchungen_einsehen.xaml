@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Hotel_Datenbanken"
       mc:Ignorable="d" d:DesignWidth="1280"
-      Title="Buchungen_einsehen" Height="700">
+      Title="Rechnung" Height="700">
 
     <Page.Resources>
         <Style TargetType="DataGrid">
@@ -31,9 +31,9 @@
 
     <Grid Margin="0,0,0,0">
 
-        <Rectangle Name="Background" Fill="LightGray" Height="720" VerticalAlignment="Top" Margin="0,10,0,0" RenderTransformOrigin="0.504,0.5"/>
+        <Rectangle Name="Background" Fill="LightGray" Height="720" VerticalAlignment="Top" Margin="0,10,0,0"/>
 
-        <GroupBox HorizontalAlignment="Left" Height="100" Header="Art" BorderBrush="DarkGray" Margin="10,304,0,0" VerticalAlignment="Top" Width="124">
+        <GroupBox HorizontalAlignment="Left" Height="110" Header="Art" BorderBrush="DarkGray" Margin="10,340,0,0" VerticalAlignment="Top" Width="124">
             <StackPanel x:Name="Stack_Type">
                 <RadioButton x:Name="RB_TypeDefault" Content="Alle" VerticalAlignment="Top" IsChecked="True" Height="20" Click="ZimmerType_Change"/>
                 <RadioButton x:Name="RB_TypeSingle" Content="Standart" VerticalAlignment="Top" Height="20"  Click="ZimmerType_Change"/>
@@ -41,7 +41,7 @@
                 <RadioButton x:Name="RB_TypeSuite" Content="Suite" VerticalAlignment="Bottom" Height="20"  Click="ZimmerType_Change"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox  HorizontalAlignment="Left" Height="150" Header="Zimmer" BorderBrush="DarkGray" Margin="10,154,0,0" VerticalAlignment="Top" Width="124">
+        <GroupBox  HorizontalAlignment="Left" Height="190" Header="Zimmer" BorderBrush="DarkGray" Margin="10,154,0,0" VerticalAlignment="Top" Width="124">
             <StackPanel x:Name="Stack_Properties">
                 <TextBox x:Name="Zimmernummer" Text="Zimmernummer" MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Buchung_TextChanged"/>
                 <CheckBox x:Name="CB_Location" Content="Nicht Straße" VerticalAlignment="Top" Height="30" Click="CB_Location_Click" Margin="0,10,0,0"/>
@@ -60,20 +60,48 @@
             </StackPanel>
         </GroupBox>
 
-        <Grid Margin="139,20,10,10">
-            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="10,15,570,615">
-                <Button Name="Rechnung_anzeigen" Content="Rechnung anzeigen" Click="Rechnungen_anzeigen_Click" Width="120"/>
+        <StackPanel Margin="100,30,0,0" Width="1100">
+            <StackPanel>
+                <Button Name="Rechnung_anzeigen" Content="Quitung anzeigen" HorizontalAlignment="Left" Click="Rechnungen_anzeigen_Click" Width="120"/>
+                <DataGrid Name="DG_Buchungen" Margin="0,10,0,0" Width="1000" Height="250" SelectionMode="Single" HeadersVisibility="Column" ColumnWidth="*" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="BuchungTabelle_SelectionChanged"/>
             </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" Margin="570,15,10,615">
-                <TextBox x:Name="Vorname" Text="Vorname"                 MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
-                <TextBox x:Name="Nachname" Text="Nachname"               MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
-                <TextBox x:Name="Email" Text="Email"                     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
-                <TextBox x:Name="Telefonnummer" Text="Telefonnummer"     MinWidth="80" LostFocus="Filter_LostFocus" GotFocus="Filter_GotFocus" TextChanged="Filter_Gast_TextChanged"/>
-            </StackPanel>
-
-            <DataGrid Name="BuchungTabelle" Margin="10,55,570,30" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="BuchungTabelle_SelectionChanged"   LostFocus="Tabelle_LostFocus"/>
-            <DataGrid Name="GastTabelle"    Margin="570,55,10,30" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="GastTabelle_SelectionChanged"      LostFocus="Tabelle_LostFocus"/>
-        </Grid>
+            <Grid Margin="0,20,0,0" Width="950">
+                <Rectangle Height="300" Fill="AliceBlue"/>
+                <StackPanel Orientation="Horizontal">
+                    <GroupBox Header="Aktuelle Zusatzleistungen" Margin="30,0,0,0" IsEnabled="False" BorderBrush="DarkGray" Height="180" Width="160">
+                        <StackPanel x:Name="Stack_OldAdditional" Margin="0,10,0,0" Initialized="Stack_Additional_Initialized"/>
+                    </GroupBox>
+                    <Separator Margin="30,0,30,0" BorderThickness="0.5" BorderBrush="DimGray" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <DataGrid x:Name="DG_Additionals" VerticalAlignment="Center" Height="250" Width="280" SelectionMode="Single" HeadersVisibility="Column" ColumnWidth="*" IsTextSearchEnabled="True" IsReadOnly="True" SelectionChanged="DG_Additionals_SelectionChanged"/>
+                        <StackPanel VerticalAlignment="Center" Margin="20,0,0,0">
+                            <Label Content="Von:"/>
+                            <DatePicker x:Name="DP_AddStart" Margin="0,0,0,30" SelectedDateChanged="DP_AddStart_SelectedDateChanged"/>
+                            <Label Content="Bis:"/>
+                            <DatePicker x:Name="DP_AddEnd" Margin="0,0,0,40" SelectedDateChanged="DP_AddEnd_SelectedDateChanged"/>
+                            <Button x:Name="Btn_Save" Content="Speichen" IsEnabled="False" Click="Btn_Save_Click"/>
+                        </StackPanel>
+                        <Separator Margin="30,0,30,0" BorderThickness="0.5" BorderBrush="DimGray" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                        <GroupBox x:Name="GB_New" VerticalAlignment="Center" HorizontalAlignment="Center" Width="180" IsEnabled="False">
+                            <StackPanel Margin="0,10,0,10">
+                                <ComboBox x:Name="CB_Zusatzleistung" Margin="0,0,0,10" SelectionChanged="CB_Zusatzleistung_SelectionChanged">
+                                    <ComboBoxItem x:Name="CB_Placeholder" Content="Zusatsleistung..." IsEnabled="False" Visibility="Collapsed"/>
+                                    <ComboBoxItem Content="Frühstück"/>
+                                    <ComboBoxItem Content="Kühlschrank"/>
+                                    <ComboBoxItem Content="Fernsehr"/>
+                                    <ComboBoxItem Content="PayTV"/>
+                                    <ComboBoxItem Content="Kinderbett"/>
+                                </ComboBox>
+                                <Label Content="Von:"/>
+                                <DatePicker x:Name="DP_NewAddStart" Margin="0,0,0,10" SelectedDateChanged="DP_NewSelectedDateChanged"/>
+                                <Label Content="Bis:"/>
+                                <DatePicker x:Name="DP_NewAddEnd" Margin="0,0,0,30" SelectedDateChanged="DP_NewSelectedDateChanged"/>
+                                <Button x:Name="Btn_New" Content="Hinzufügen" IsEnabled="False" Click="Btn_New_Click"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
     </Grid>
 </Page>

@@ -31,57 +31,6 @@ namespace Hotel_Datenbanken
             return completePrice;
         }
 
-        public static int BuchungPrice(Structure.NewBuchung buchung, MySqlConnection DB)
-        {
-            MySqlCommand cmd;
-            MySqlDataReader reader;
-            int price = 0;
-            int days = buchung.CheckOut.DayNumber - buchung.CheckIn.DayNumber;
-
-            foreach (int roomNr in buchung.RoomNrs)
-            {
-                string query = "SELECT p.Preis " +
-                        "FROM zimmer z " +
-                        "INNER JOIN preis p On z.Zimmertyp = p.Kategorie " +
-                        $"WHERE z.Zimmer_ID = {roomNr}";
-                cmd = new(query, DB);
-                reader = cmd.ExecuteReader();
-
-                price += reader.GetInt32(0) * days;
-                reader.Close();
-
-                query = "SELECT " +
-                    "IF(z.Terrasse = \"Ja\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Terrasse\"), 0) + " +
-                    "IF(z.Balkon = \"Großer Balkon\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Großer Balkon\"), 0) + " +
-                    "IF(z.Balkon = \"Kleiner Balkon\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Kleiner Balkon\"), 0) + " +
-                    "IF(z.Aussicht_Strasse = \"Nein\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Nicht Straße\"), 0) AS Preis " +
-                    "FROM zimmer z " +
-                    $"WHERE z.Zimmer_ID = {roomNr}";
-
-                cmd = new(query, DB);
-                reader = cmd.ExecuteReader();
-                reader.Read();
-                price += reader.GetInt32(0) * days;
-            }
-
-            if (buchung.Additionals != null)
-            {
-                foreach (int zusatzleistung in buchung.Additionals)
-                {
-                    string query = "SELECT z.Preis " +
-                        "FROM zusatzleistung z " +
-                        $"WHERE z.Zusatzleistungs_Id = {zusatzleistung}";
-                    cmd = new(query, DB);
-                    reader = cmd.ExecuteReader();
-                    reader.Read();
-                    price += reader.GetInt32(0) * days;
-                    reader.Close();
-                }
-            }
-
-            return price;
-        }
-
         public static int BuchungPrice(int buchungsId, MySqlConnection DB)
         {
             int price;
@@ -133,6 +82,57 @@ namespace Hotel_Datenbanken
             reader.Close();
 
 
+
+            return price;
+        }
+
+        public static int BuchungPrice(Structure.NewBuchung buchung, MySqlConnection DB)
+        {
+            MySqlCommand cmd;
+            MySqlDataReader reader;
+            int price = 0;
+            int days = buchung.CheckOut.DayNumber - buchung.CheckIn.DayNumber;
+
+            foreach (int roomNr in buchung.RoomNrs)
+            {
+                string query = "SELECT p.Preis " +
+                        "FROM zimmer z " +
+                        "INNER JOIN preis p On z.Zimmertyp = p.Kategorie " +
+                        $"WHERE z.Zimmer_ID = {roomNr}";
+                cmd = new(query, DB);
+                reader = cmd.ExecuteReader();
+
+                price += reader.GetInt32(0) * days;
+                reader.Close();
+
+                query = "SELECT " +
+                    "IF(z.Terrasse = \"Ja\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Terrasse\"), 0) + " +
+                    "IF(z.Balkon = \"Großer Balkon\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Großer Balkon\"), 0) + " +
+                    "IF(z.Balkon = \"Kleiner Balkon\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Kleiner Balkon\"), 0) + " +
+                    "IF(z.Aussicht_Strasse = \"Nein\", (SELECT p.preis FROM preis p WHERE p.Kategorie = \"Nicht Straße\"), 0) AS Preis " +
+                    "FROM zimmer z " +
+                    $"WHERE z.Zimmer_ID = {roomNr}";
+
+                cmd = new(query, DB);
+                reader = cmd.ExecuteReader();
+                reader.Read();
+                price += reader.GetInt32(0) * days;
+            }
+
+            if (buchung.Additionals != null)
+            {
+                foreach (int zusatzleistung in buchung.Additionals)
+                {
+                    string query = "SELECT z.Preis " +
+                        "FROM zusatzleistung z " +
+                        $"WHERE z.Zusatzleistungs_Id = {zusatzleistung}";
+                    cmd = new(query, DB);
+                    reader = cmd.ExecuteReader();
+                    reader.Read();
+                    price += reader.GetInt32(0) * days;
+                    reader.Close();
+                }
+            }
 
             return price;
         }
